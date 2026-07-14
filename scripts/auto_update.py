@@ -207,6 +207,12 @@ def calc_metrics(nav_list, rf=RISK_FREE_RATE):
     returns = {}
     for key, start_date in periods.items():
         r = calc_period_return(adj, dates, start_date, latest)
+        if r is not None:
+            # Guard against obviously wrong returns (>200% for any period is anomalous for 固收+)
+            if abs(r) > 200:
+                print('  [WARN] Anomalous return for {}: {} = {}% (possible data issue)'.format(
+                    dates[latest] if dates else '?', key, r))
+                r = None
         returns[key] = r if r is not None else ''
 
     # Annualized return (1Y)
@@ -244,18 +250,19 @@ def calc_metrics(nav_list, rf=RISK_FREE_RATE):
         if dd < max_dd:
             max_dd = dd
 
-    # Sharpe ratio
-    sharpe = round((ann_ret - rf * 100) / vol, 2) if vol > 0 else ''
+    # Sharpe ratio — all values in decimal form
+    vol_dec = vol / 100
+    sharpe = round((ann_ret - rf) / vol_dec, 2) if vol_dec > 0 else ''
 
-    # Calmar ratio
-    calmar = round(ann_ret / abs(max_dd), 2) if max_dd != 0 else ''
+    # Calmar ratio — ann_ret is decimal, max_dd is percentage
+    calmar = round(ann_ret * 100 / abs(max_dd), 2) if max_dd != 0 else ''
 
     # Sortino ratio
     neg_rets = [r for r in daily_rets if r < 0]
     if len(neg_rets) > 10:
         down_var = sum(r ** 2 for r in neg_rets) / len(neg_rets)
-        down_vol = math.sqrt(down_var * 250) * 100
-        sortino = round((ann_ret - rf * 100) / down_vol, 2) if down_vol > 0 else ''
+        down_vol_dec = math.sqrt(down_var * 250)
+        sortino = round((ann_ret - rf) / down_vol_dec, 2) if down_vol_dec > 0 else ''
     else:
         sortino = ''
 
@@ -355,38 +362,57 @@ def calc_beta_decomp(nav_list, benchmark_navs):
     if len(fund_rets) < 50:
         return {}
 
-    # Build benchmark returns (align dates)
+    # Build benchmark returns (align dates — skip days with missing benchmark data)
     def build_bench_rets(bench_list):
         if not bench_list:
-            return [0] * len(fund_rets)
+            return None  # Signal no benchmark data
         bench_adj = build_adjusted_nav(bench_list)
         bench_dates = [e['date'] for e in bench_list]
         bench_map = {d: bench_adj[i] for i, d in enumerate(bench_dates)}
 
         rets = []
+        valid_mask = []  # Track which fund dates had valid benchmark data
         prev = None
         for d in ret_dates:
             curr = bench_map.get(d)
             if curr and prev and prev > 0:
                 rets.append(curr / prev - 1)
+                valid_mask.append(True)
             else:
-                rets.append(0)
+                rets.append(None)  # Will be filtered out
+                valid_mask.append(False)
             if curr:
                 prev = curr
-        return rets
+        return rets, valid_mask
 
-    eq_rets = build_bench_rets(benchmark_navs.get('eq', []))
-    bd_rets = build_bench_rets(benchmark_navs.get('bd', []))
+    eq_result = build_bench_rets(benchmark_navs.get('eq', []))
+    bd_result = build_bench_rets(benchmark_navs.get('bd', []))
+
+    if eq_result is None or bd_result is None:
+        return {}
+
+    eq_rets_all, eq_mask = eq_result
+    bd_rets_all, bd_mask = bd_result
+
+    # Filter: only use days where BOTH benchmarks AND fund have valid data
+    y_filtered = []
+    eq_filtered = []
+    bd_filtered = []
+    for i in range(min(len(fund_rets), len(eq_rets_all), len(bd_rets_all))):
+        if eq_mask[i] and bd_mask[i] and eq_rets_all[i] is not None and bd_rets_all[i] is not None:
+            y_filtered.append(fund_rets[i])
+            eq_filtered.append(eq_rets_all[i])
+            bd_filtered.append(bd_rets_all[i])
 
     # OLS: y = a + b1*x1 + b2*x2
     # Using normal equations: beta = (X'X)^{-1} X'y
-    n = min(len(fund_rets), len(eq_rets), len(bd_rets))
+    n = len(y_filtered)
     if n < 50:
         return {}
 
-    y = fund_rets[:n]
-    x1 = eq_rets[:n]
-    x2 = bd_rets[:n]
+    y = y_filtered
+    x1 = eq_filtered
+    x2 = bd_filtered
 
     # Means
     my = sum(y) / n
@@ -444,21 +470,27 @@ def calc_beta_decomp(nav_list, benchmark_navs):
 
 def fetch_quarterly_allocation(code):
     """从天天基金获取最近几个季度的资产配置"""
-    url = f'https://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=zcpz&code={code}'
+    url = 'https://fundf10.eastmoney.com/zcpz_{}.html'.format(code)
     try:
         resp = requests.get(url, headers={
-            'User-Agent': HEADERS['User-Agent'],
-            'Referer': f'https://fundf10.eastmoney.com/zcpz_{code}.html',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Referer': 'https://fund.eastmoney.com/',
         }, timeout=15)
 
         html = resp.text
-        # Parse HTML table for quarterly allocation
-        # The response contains a table with columns: 报告期, 股票占比, 债券占比, 现金占比, 其他
         import re
-        rows = re.findall(r'<tr>(.*?)</tr>', html, re.DOTALL)
+        # Find the asset allocation table (class="tzxq")
+        table_match = re.search(r'<table[^>]*class="[^"]*tzxq[^"]*"[^>]*>(.*?)</table>', html, re.DOTALL)
+        if not table_match:
+            print('  [WARN] {}: no tzxq table found'.format(code))
+            return []
+
+        table_html = table_match.group(1)
+        rows = re.findall(r'<tr>(.*?)</tr>', table_html, re.DOTALL)
 
         quarters = []
         for row in rows:
+            # Cells: 报告期, 股票占净比, 债券占净比, 现金占净比, 净资产
             cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
             if len(cells) >= 4:
                 period = re.sub(r'<[^>]+>', '', cells[0]).strip()
@@ -467,10 +499,9 @@ def fetch_quarterly_allocation(code):
                 cash = re.sub(r'<[^>]+>', '', cells[3]).strip().replace('%', '')
 
                 if period and stock:
-                    # Convert period format "2024-12-31" to "24Q4"
                     try:
                         dt = datetime.strptime(period, '%Y-%m-%d')
-                        q_label = f"{str(dt.year)[2:]}Q{((dt.month - 1) // 3 + 1)}"
+                        q_label = '{}Q{}'.format(str(dt.year)[2:], (dt.month - 1) // 3 + 1)
                         quarters.append({
                             'quarter': q_label,
                             'stock': stock,
@@ -481,12 +512,12 @@ def fetch_quarterly_allocation(code):
                     except:
                         continue
 
-        # Return last 8 quarters, reversed to chronological order
+        # Return last 8 quarters in chronological order
         quarters.reverse()
         return quarters[-8:] if len(quarters) >= 8 else quarters
 
     except Exception as e:
-        print(f"  [WARN] {code}: allocation fetch failed: {e}")
+        print('  [WARN] {}: allocation fetch failed: {}'.format(code, e))
         return []
 
 

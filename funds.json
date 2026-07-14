@@ -1,29 +1,134 @@
 {
   "description": "固收+基金对比报告 — 追踪基金清单。增删基金只需编辑此文件的 funds 数组。",
   "funds": [
-    {"code": "001303", "name": "易方达裕丰回报A", "company": "易方达基金", "manager": "张清华"},
-    {"code": "002969", "name": "招商产业债A", "company": "招商基金", "manager": "马龙"},
-    {"code": "005771", "name": "银华可转债A", "company": "银华基金", "manager": "王鑫"},
-    {"code": "003382", "name": "民生加银鑫享A", "company": "民生加银基金", "manager": "孙伟"},
-    {"code": "002351", "name": "易方达裕祥回报A", "company": "易方达基金", "manager": "张清华"},
-    {"code": "006332", "name": "招商金鸿债券A", "company": "招商基金", "manager": "马龙"},
-    {"code": "005461", "name": "南方希元转债A", "company": "南方基金", "manager": "刘文良"},
-    {"code": "005876", "name": "易方达鑫转增利A", "company": "易方达基金", "manager": "杨康"},
-    {"code": "003458", "name": "嘉实稳宏债券A", "company": "嘉实基金", "manager": "赖礼辉"},
-    {"code": "000297", "name": "鹏华可转债A", "company": "鹏华基金", "manager": "王石千"},
-    {"code": "008809", "name": "安信民稳增长A", "company": "安信基金", "manager": "张翼飞"},
-    {"code": "007038", "name": "中银久享稳健A", "company": "中银基金", "manager": "陈玮"},
-    {"code": "003281", "name": "广发聚安混合A", "company": "广发基金", "manager": "任爽"},
-    {"code": "002569", "name": "博时裕腾债券", "company": "博时基金", "manager": "陈凯杨"},
-    {"code": "000085", "name": "华安新活力混合", "company": "华安基金", "manager": "贺涛"},
-    {"code": "006150", "name": "招商添利两年定开债", "company": "招商基金", "manager": "康晶"}
+    {
+      "code": "000171",
+      "name": "易方达裕丰回报债券A",
+      "company": "易方达基金",
+      "manager": "张清华"
+    },
+    {
+      "code": "217022",
+      "name": "招商产业债券A",
+      "company": "招商基金",
+      "manager": "马龙"
+    },
+    {
+      "code": "005771",
+      "name": "银华可转债债券A",
+      "company": "银华基金",
+      "manager": "王鑫"
+    },
+    {
+      "code": "003382",
+      "name": "民生加银鑫享债券A",
+      "company": "民生加银基金",
+      "manager": "孙伟"
+    },
+    {
+      "code": "002351",
+      "name": "易方达裕祥回报债券A",
+      "company": "易方达基金",
+      "manager": "张清华"
+    },
+    {
+      "code": "006332",
+      "name": "招商金鸿债券A",
+      "company": "招商基金",
+      "manager": "马龙"
+    },
+    {
+      "code": "005461",
+      "name": "南方希元可转债债券A",
+      "company": "南方基金",
+      "manager": "刘文良"
+    },
+    {
+      "code": "005876",
+      "name": "易方达鑫转增利混合A",
+      "company": "易方达基金",
+      "manager": "杨康"
+    },
+    {
+      "code": "003458",
+      "name": "嘉实稳宏债券A",
+      "company": "嘉实基金",
+      "manager": "赖礼辉"
+    },
+    {
+      "code": "000297",
+      "name": "鹏华可转债债券A",
+      "company": "鹏华基金",
+      "manager": "王石千"
+    },
+    {
+      "code": "008809",
+      "name": "安信民稳增长混合A",
+      "company": "安信基金",
+      "manager": "张翼飞"
+    },
+    {
+      "code": "110017",
+      "name": "易方达增强回报债券A",
+      "company": "易方达基金",
+      "manager": "张清华"
+    },
+    {
+      "code": "001115",
+      "name": "广发聚安混合A",
+      "company": "广发基金",
+      "manager": "任爽"
+    },
+    {
+      "code": "002354",
+      "name": "博时裕腾纯债债券A",
+      "company": "博时基金",
+      "manager": "陈凯杨"
+    },
+    {
+      "code": "000590",
+      "name": "华安新活力灵活配置混合A",
+      "company": "华安基金",
+      "manager": "贺涛"
+    },
+    {
+      "code": "006150",
+      "name": "招商添利两年债券",
+      "company": "招商基金",
+      "manager": "康晶"
+    }
   ],
   "scenarios": {
-    "bondCrash2022": {"name": "2022.11 债灾", "desc": "理财赎回潮引发债市踩踏", "start": "2022-11-01", "end": "2022-12-15"},
-    "equityRally2023": {"name": "2023 Q1 AI行情", "desc": "ChatGPT带动科技股暴涨", "start": "2023-01-01", "end": "2023-03-31"},
-    "bondRally2024": {"name": "2024 债牛", "desc": "利率持续下行，长债大涨", "start": "2024-01-01", "end": "2024-06-30"},
-    "equityCorrection": {"name": "2024权益回调", "desc": "市场系统性下跌阶段", "start": "2024-09-01", "end": "2024-10-15"},
-    "rateCut2025": {"name": "2025 宽松周期", "desc": "降准降息，流动性充裕", "start": "2025-01-01", "end": "2025-06-30"}
+    "bondCrash2022": {
+      "name": "2022.11 债灾",
+      "desc": "理财赎回潮引发债市踩踏",
+      "start": "2022-11-01",
+      "end": "2022-12-15"
+    },
+    "equityRally2023": {
+      "name": "2023 Q1 AI行情",
+      "desc": "ChatGPT带动科技股暴涨",
+      "start": "2023-01-01",
+      "end": "2023-03-31"
+    },
+    "bondRally2024": {
+      "name": "2024 债牛",
+      "desc": "利率持续下行，长债大涨",
+      "start": "2024-01-01",
+      "end": "2024-06-30"
+    },
+    "equityCorrection": {
+      "name": "2024权益回调",
+      "desc": "市场系统性下跌阶段",
+      "start": "2024-09-01",
+      "end": "2024-10-15"
+    },
+    "rateCut2025": {
+      "name": "2025 宽松周期",
+      "desc": "降准降息，流动性充裕",
+      "start": "2025-01-01",
+      "end": "2025-06-30"
+    }
   },
   "benchmarks": {
     "eqIndex": "510300",
