@@ -1,0 +1,43 @@
+name: 每日数据更新
+on:
+  schedule:
+    - cron: '0 0 * * 1-5'   # UTC 0:00 = 北京时间 8:00，工作日
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore NAV cache
+        uses: actions/cache@v4
+        with:
+          path: nav_cache.json
+          key: nav-cache-${{ github.run_id }}
+          restore-keys: |
+            nav-cache-
+
+      - run: pip install requests python-dateutil
+
+      - name: Run data pipeline
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: python -u scripts/auto_update.py
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet public/fund-data.json 2>/dev/null; then
+            echo "No changes"
+          else
+            git add public/fund-data.json
+            git commit -m "data: update $(TZ=Asia/Shanghai date +%Y-%m-%d)"
+            git push
+          fi

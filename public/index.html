@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>固收+基金对比报告生成器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --ink: #1a3264;
+  --ink-light: #2d4a7a;
+  --ink-muted: #6b7a94;
+  --gold: #d5a12a;
+  --gold-light: #f0d88a;
+  --gold-dim: #e8c764;
+  --surface: #f6f7fb;
+  --card: #ffffff;
+  --border: #e2e6ee;
+  --border-light: #eef1f6;
+  --red: #c44536;
+  --red-bg: #fef2f0;
+  --green: #2a7d5f;
+  --green-bg: #f0faf5;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Source Sans 3', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+  --shadow-sm: 0 1px 2px rgba(26,50,100,0.06);
+  --shadow-md: 0 4px 12px rgba(26,50,100,0.08);
+  --shadow-lg: 0 8px 24px rgba(26,50,100,0.1);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dim), var(--gold));
+}
+
+/* ── Typography ── */
+h1 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; }
+h3 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; }
+.text-muted { color: var(--ink-muted); }
+.text-sm { font-size: 0.82rem; }
+.text-xs { font-size: 0.72rem; }
+.text-mono { font-family: var(--font-mono); }
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+section { margin-bottom: 2.5rem; }
+
+/* ── Header ── */
+.header {
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.header h1 { display: flex; align-items: center; gap: 0.6rem; }
+.header h1::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: inline-block;
+}
+.header-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--gold);
+  background: rgba(213,161,42,0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* ── Input Section ── */
+.input-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.input-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.input-group label { font-size: 0.78rem; font-weight: 500; color: var(--ink-muted); }
+.input-group input, .input-group select {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-group input:focus, .input-group select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(213,161,42,0.12);
+}
+.input-group input::placeholder { color: #b0b8c8; }
+
+/* ── Buttons ── */
+.btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 1.2rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--ink-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--ink-muted); background: var(--surface); }
+.btn-gold {
+  background: var(--gold);
+  color: #fff;
+}
+.btn-gold:hover { background: #c4921f; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ── Fund Chips ── */
+.fund-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+.fund-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+.fund-chip .chip-remove {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.fund-chip .chip-remove:hover { opacity: 1; }
+.fund-chip[data-color="0"] { background: rgba(26,50,100,0.06); border-color: rgba(26,50,100,0.2); color: var(--ink); }
+.fund-chip[data-color="1"] { background: rgba(213,161,42,0.08); border-color: rgba(213,161,42,0.25); color: #8a6b10; }
+.fund-chip[data-color="2"] { background: rgba(42,125,95,0.07); border-color: rgba(42,125,95,0.2); color: #1a5c42; }
+.fund-chip[data-color="3"] { background: rgba(196,69,54,0.06); border-color: rgba(196,69,54,0.2); color: #8a2a1e; }
+
+/* ── Comparison Table ── */
+.comp-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.comp-table th, .comp-table td {
+  padding: 0.6rem 0.8rem;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+}
+.comp-table th:first-child, .comp-table td:first-child { text-align: left; }
+.comp-table thead th {
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid var(--border);
+}
+.comp-table tbody tr:hover { background: rgba(26,50,100,0.015); }
+.comp-table td[contenteditable="true"] {
+  cursor: text;
+  transition: background 0.15s;
+  border-radius: 3px;
+}
+.comp-table td[contenteditable="true"]:hover { background: rgba(213,161,42,0.06); }
+.comp-table td[contenteditable="true"]:focus {
+  background: rgba(213,161,42,0.1);
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
+}
+.comp-table .section-row td {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.8rem;
+  font-family: var(--font-display);
+}
+.comp-table .best { color: var(--green); font-weight: 600; }
+.comp-table .worst { color: var(--red); font-weight: 500; }
+.fund-name-cell { max-width: 180px; }
+.fund-name-cell .fn-name { font-weight: 600; font-size: 0.82rem; }
+.fund-name-cell .fn-code { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); }
+
+/* ── Chart Grid ── */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+.chart-card { min-height: 300px; }
+.chart-card canvas { max-height: 260px; }
+
+/* ── Qualitative Section ── */
+.qual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.qual-item textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  min-height: 70px;
+  color: var(--ink);
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.qual-item textarea:focus {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(213,161,42,0.1);
+}
+.qual-item label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  margin-bottom: 0.3rem;
+}
+
+/* ── Action Bar ── */
+.action-bar {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+/* ── Status & Messages ── */
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 0.75rem;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--ink-muted);
+}
+.empty-state p { margin-top: 0.5rem; font-size: 0.85rem; }
+.empty-state .empty-icon {
+  font-size: 2rem;
+  opacity: 0.3;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Loading ── */
+.loading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(246,247,251,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.loading-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Report Print ── */
+.report-preview {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  max-width: 900px;
+  margin: 0 auto;
+}
+.report-preview .report-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 2rem;
+}
+.report-preview .report-header h1 { font-size: 1.4rem; }
+.report-preview .report-header .report-date {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 0.3rem;
+}
+
+/* ── Deep Analysis Modules ── */
+.deep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+.drift-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 0.8rem; }
+.drift-table th, .drift-table td {
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-light);
+}
+.drift-table th { font-weight: 600; color: var(--ink-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.drift-table th:first-child, .drift-table td:first-child { text-align: left; }
+.drift-table td[contenteditable="true"] { cursor: text; border-radius: 3px; font-family: var(--font-mono); }
+.drift-table td[contenteditable="true"]:focus { background: rgba(213,161,42,0.1); outline: 2px solid var(--gold); outline-offset: -2px; }
+.drift-table .fund-label { font-weight: 600; font-size: 0.78rem; white-space: nowrap; }
+.scenario-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.scenario-table th, .scenario-table td {
+  padding: 0.55rem 0.7rem;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+}
+.scenario-table th:first-child, .scenario-table td:first-child { text-align: left; font-weight: 500; }
+.scenario-table thead th { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.03em; border-bottom: 2px solid var(--border); padding-bottom: 0.6rem; }
+.scenario-table tbody tr:hover { background: rgba(26,50,100,0.015); }
+.scenario-table td[contenteditable="true"] { cursor: text; font-family: var(--font-mono); border-radius: 3px; }
+.scenario-table td[contenteditable="true"]:focus { background: rgba(213,161,42,0.1); outline: 2px solid var(--gold); outline-offset: -2px; }
+.scenario-table .event-desc { font-size: 0.72rem; color: var(--ink-muted); font-weight: 400; display: block; margin-top: 2px; }
+.beta-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.beta-table th, .beta-table td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border-light); }
+.beta-table th { text-align: left; font-weight: 500; color: var(--ink-muted); font-size: 0.78rem; width: 35%; }
+.beta-table td { text-align: right; font-family: var(--font-mono); }
+.beta-table td[contenteditable="true"] { cursor: text; border-radius: 3px; }
+.beta-table td[contenteditable="true"]:focus { background: rgba(213,161,42,0.1); outline: 2px solid var(--gold); outline-offset: -2px; }
+.module-subtitle { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.6rem; line-height: 1.5; }
+.insight-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  margin-right: 0.3rem;
+  margin-top: 0.4rem;
+}
+.insight-good { background: var(--green-bg); color: var(--green); }
+.insight-warn { background: #fef9ec; color: #a67c00; }
+.insight-bad { background: var(--red-bg); color: var(--red); }
+.drift-chart-container { height: 180px; margin-top: 1rem; }
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  .no-print { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  .container { max-width: 100%; padding: 0; }
+  .comp-table { font-size: 0.75rem; }
+  .chart-grid { grid-template-columns: 1fr 1fr; }
+  .deep-grid { grid-template-columns: 1fr 1fr; }
+  .drift-chart-container { display: none; }
+}
+
+/* ── Animations ── */
+.fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.slide-up { animation: slideUp 0.5s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<!-- ════ Header ════ -->
+<div class="container no-print">
+  <header class="header">
+    <div class="header-inner">
+      <h1>固收+基金对比报告</h1>
+      <span class="header-badge">COMPARISON TOOL</span>
+    </div>
+  </header>
+</div>
+
+<!-- ════ Input Section ════ -->
+<div class="container no-print" id="inputSection">
+  <section class="card fade-in">
+    <div class="card-header">
+      <h2>选择对比基金</h2>
+      <div style="display:flex;gap:0.5rem">
+        <button class="btn btn-secondary btn-sm" onclick="loadAllFromJSON()" title="从 fund-data.json 加载数据">加载数据源</button>
+        <button class="btn btn-secondary btn-sm" onclick="loadDemoData()">加载示例</button>
+        <button class="btn btn-secondary btn-sm" onclick="clearAll()">清空</button>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group" style="flex:1">
+        <label>基金代码</label>
+        <input type="text" id="fundCodeInput" placeholder="输入基金代码，如 001234" maxlength="6"
+          onkeydown="if(event.key==='Enter')addFund()">
+      </div>
+      <button class="btn btn-primary" onclick="addFund()">添加基金</button>
+    </div>
+    <div class="fund-chips" id="fundChips"></div>
+    <div class="status-bar" id="statusBar" style="display:none">
+      <span class="status-dot"></span>
+      <span id="statusText"></span>
+    </div>
+  </section>
+</div>
+
+<!-- ════ Dashboard ════ -->
+<div class="container" id="dashboard" style="display:none">
+
+  <!-- Summary Cards -->
+  <section id="summaryCards" class="fade-in"></section>
+
+  <!-- Comparison Table -->
+  <section class="card slide-up">
+    <div class="card-header">
+      <h2>核心指标对比</h2>
+      <span class="text-xs text-muted">点击数值可编辑</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="comp-table" id="compTable"></table>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="chart-grid slide-up">
+    <div class="card chart-card">
+      <div class="card-header"><h2>累计收益率对比</h2></div>
+      <canvas id="returnChart"></canvas>
+    </div>
+    <div class="card chart-card">
+      <div class="card-header"><h2>最大回撤</h2></div>
+      <canvas id="drawdownChart"></canvas>
+    </div>
+    <div class="card chart-card">
+      <div class="card-header"><h2>收益风险散点</h2></div>
+      <canvas id="riskReturnChart"></canvas>
+    </div>
+    <div class="card chart-card">
+      <div class="card-header"><h2>资产配置结构</h2></div>
+      <canvas id="allocationChart"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══ Deep Analysis: 风格漂移 + 场景归因 + Beta剥离 ═══ -->
+  <section class="card slide-up no-print">
+    <div class="card-header">
+      <h2>深度分析</h2>
+      <span class="text-xs text-muted">所有数据均可编辑，修改后自动更新分析结论</span>
+    </div>
+
+    <div class="deep-grid">
+      <!-- Module 1: Style Drift -->
+      <div>
+        <h3 style="margin-bottom:0.3rem">风格漂移检测</h3>
+        <p class="module-subtitle">连续季度资产配置变化趋势 — 仓位稳定性是机构尽调的核心维度</p>
+        <div id="driftTables"></div>
+        <div class="drift-chart-container"><canvas id="driftChart"></canvas></div>
+        <div id="driftInsights" style="margin-top:0.6rem"></div>
+      </div>
+
+      <!-- Module 2: Downside Scenario -->
+      <div>
+        <h3 style="margin-bottom:0.3rem">下行场景归因</h3>
+        <p class="module-subtitle">历史极端行情下的表现 — "下次出事的时候你怎么办"</p>
+        <div id="scenarioTable"></div>
+        <div id="scenarioInsights" style="margin-top:0.6rem"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 3: Beta Decomposition (full width) -->
+  <section class="card slide-up no-print">
+    <div class="card-header">
+      <h2>Beta 剥离与归因</h2>
+      <span class="text-xs text-muted">区分"赚市场的钱"还是"赚能力的钱"</span>
+    </div>
+    <p class="module-subtitle">以沪深300和中债综合指数为基准，分解基金收益来源。数据可来自 Wind/Choice/晨星。</p>
+    <div class="deep-grid">
+      <div id="betaTable"></div>
+      <div><canvas id="betaChart"></canvas></div>
+    </div>
+    <div id="betaInsights" style="margin-top:0.8rem"></div>
+  </section>
+
+  <!-- Qualitative Assessment -->
+  <section class="card slide-up no-print">
+    <div class="card-header">
+      <h2>定性评估</h2>
+      <button class="btn btn-secondary btn-sm" onclick="autoGenerateQualitative()" title="基于定量数据自动生成定性评估">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+        一键生成
+      </button>
+    </div>
+    <div class="qual-grid" id="qualGrid"></div>
+  </section>
+
+  <!-- Action Bar -->
+  <div class="action-bar no-print">
+    <button class="btn btn-secondary" onclick="exportJSON()">导出数据</button>
+    <button class="btn btn-secondary" onclick="importJSON()">导入数据</button>
+    <button class="btn btn-gold" onclick="generateReport()">生成报告</button>
+  </div>
+</div>
+
+<!-- ════ Report Preview (for print) ════ -->
+<div class="container" id="reportPreview" style="display:none"></div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+/* ════════════════════════════════════════════
+   STATE & CONFIG
+   ════════════════════════════════════════════ */
+const COLORS = ['#1a3264', '#d5a12a', '#2a7d5f', '#c44536'];
+const COLORS_LIGHT = ['rgba(26,50,100,0.12)', 'rgba(213,161,42,0.15)', 'rgba(42,125,95,0.12)', 'rgba(196,69,54,0.1)'];
+
+const state = {
+  funds: [],        // Array of fund data objects
+  charts: {},       // Chart.js instances
+};
+
+// Empty fund template
+function emptyFund(code) {
+  return {
+    code: code || '',
+    name: '',
+    nav: '', navDate: '',
+    returns: { ytd: '', m1: '', m3: '', m6: '', y1: '', y2: '', y3: '', inception: '' },
+    risk: { annualVol: '', maxDrawdown: '', sharpe: '', calmar: '', sortino: '' },
+    allocation: { stock: '', bond: '', cash: '', other: '' },
+    info: { inceptionDate: '', manager: '', size: '', company: '', type: '' },
+    qualitative: {
+      style: '', riskControl: '', teamStability: '', suitability: ''
+    },
+    quarterlyHistory: [
+      { quarter: '24Q3', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '24Q4', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '25Q1', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '25Q2', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '25Q3', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '25Q4', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '26Q1', stock: '', bond: '', cash: '', other: '' },
+      { quarter: '26Q2', stock: '', bond: '', cash: '', other: '' },
+    ],
+    scenarioReturns: {
+      bondCrash2022: '',   // 2022.11 债灾
+      equityRally2023: '', // 2023 Q1 AI行情
+      bondRally2024: '',   // 2024 债牛
+      equityCorrection: '',// 权益市场回调期
+      rateCut2025: '',     // 降息周期
+    },
+    betaDecomp: {
+      eqBeta: '',   // 股票Beta
+      bdBeta: '',   // 债券Beta
+      alpha: '',    // 年化Alpha
+      rSquared: '', // R²
+      trackingErr: '', // 跟踪误差
+      infoRatio: '',   // 信息比率
+    }
+  };
+}
+
+/* ════════════════════════════════════════════
+   FUND MANAGEMENT
+   ════════════════════════════════════════════ */
+function addFund() {
+  const input = document.getElementById('fundCodeInput');
+  const code = input.value.trim();
+  if (!code) return;
+  if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+    showStatus('请输入6位数字基金代码', false);
+    return;
+  }
+  if (state.funds.length >= 4) {
+    showStatus('最多支持4只基金对比', false);
+    return;
+  }
+  if (state.funds.find(f => f.code === code)) {
+    showStatus('该基金已添加', false);
+    return;
+  }
+  input.value = '';
+
+  // First check pre-loaded JSON data
+  if (_jsonData.loaded && _jsonData.funds.find(f => f.code === code)) {
+    addFundFromJSON(code);
+    renderChips();
+    renderDashboard();
+    showStatus(`${state.funds[state.funds.length - 1].name} 已从数据源加载`, false);
+    return;
+  }
+
+  // Fall back to JSONP fetch
+  const fund = emptyFund(code);
+  state.funds.push(fund);
+  renderChips();
+  fetchFundData(code);
+}
+
+function removeFund(code) {
+  state.funds = state.funds.filter(f => f.code !== code);
+  renderChips();
+  if (state.funds.length > 0) {
+    renderDashboard();
+  } else {
+    document.getElementById('dashboard').style.display = 'none';
+  }
+}
+
+function renderChips() {
+  const container = document.getElementById('fundChips');
+  container.innerHTML = state.funds.map((f, i) => `
+    <span class="fund-chip" data-color="${i}">
+      ${f.name ? f.name : f.code}
+      ${f.name ? `<span style="font-family:var(--font-mono);opacity:0.6">${f.code}</span>` : ''}
+      <span class="chip-remove" onclick="removeFund('${f.code}')">&times;</span>
+    </span>
+  `).join('');
+}
+
+function clearAll() {
+  state.funds = [];
+  renderChips();
+  document.getElementById('dashboard').style.display = 'none';
+  destroyCharts();
+}
+
+function showStatus(text, loading = true) {
+  const bar = document.getElementById('statusBar');
+  const dot = bar.querySelector('.status-dot');
+  const txt = document.getElementById('statusText');
+  bar.style.display = 'flex';
+  dot.style.animationPlayState = loading ? 'running' : 'paused';
+  dot.style.background = loading ? 'var(--gold)' : 'var(--red)';
+  txt.textContent = text;
+  if (!loading) setTimeout(() => { bar.style.display = 'none'; }, 3000);
+}
+
+/* ════════════════════════════════════════════
+   DATA FETCHING (JSONP)
+   ════════════════════════════════════════════ */
+function jsonp(url, callbackName, timeout = 6000) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Timeout'));
+    }, timeout);
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = (data) => {
+      cleanup();
+      resolve(data);
+    };
+
+    script.src = `${url}&callback=${callbackName}`;
+    script.onerror = () => { cleanup(); reject(new Error('Script error')); };
+    document.head.appendChild(script);
+  });
+}
+
+async function fetchFundData(code) {
+  showStatus(`正在获取 ${code} 的数据...`, true);
+
+  const fund = state.funds.find(f => f.code === code);
+  if (!fund) return;
+
+  let fetched = false;
+
+  // Try fetching real-time NAV
+  try {
+    const cbName = `jsonp_${code}_${Date.now()}`;
+    const url = `https://fundgz.1234567.com.cn/js/${code}.js?rt=${Date.now()}`;
+    const data = await jsonp(url, cbName);
+    if (data && data.fundcode) {
+      fund.name = data.name || '';
+      fund.nav = parseFloat(data.gsz).toFixed(4);
+      fund.navDate = data.gztime || '';
+      fund.returns.ytd = data.gszzl || '';
+      fetched = true;
+    }
+  } catch (e) {
+    console.warn(`JSONP fetch failed for ${code}:`, e.message);
+  }
+
+  // Try fetching additional info via another endpoint
+  try {
+    const cbName2 = `jsonp_info_${code}_${Date.now()}`;
+    const url2 = `https://fund.eastmoney.com/pingzhongdata/${code}.js?v=${Date.now()}`;
+    // This endpoint returns JS variables, not JSONP - try script injection
+    const resp = await fetchWithCors(url2);
+    if (resp) {
+      parseFundInfo(fund, resp);
+      fetched = true;
+    }
+  } catch (e) {
+    console.warn(`Info fetch failed for ${code}:`, e.message);
+  }
+
+  if (fetched) {
+    showStatus(`${fund.name || code} 数据获取成功，所有字段均可编辑`, false);
+  } else {
+    showStatus(`${code} 自动获取未成功，请手动填写数据`, false);
+  }
+
+  renderChips();
+  renderDashboard();
+}
+
+async function fetchWithCors(url) {
+  try {
+    const resp = await fetch(url, { mode: 'no-cors' });
+    if (resp.type === 'opaque') return null;
+    return await resp.text();
+  } catch { return null; }
+}
+
+function parseFundInfo(fund, text) {
+  try {
+    // Extract common variables from pingzhongdata
+    const match = (varName) => {
+      const re = new RegExp(`var\\s+${varName}\\s*=\\s*([^;]+);`);
+      const m = text.match(re);
+      return m ? m[1].trim() : null;
+    };
+    const nameMatch = match('fS_name');
+    if (nameMatch) fund.name = nameMatch.replace(/"/g, '');
+
+    const managerMatch = match('Data_currentFundManager');
+    if (managerMatch) {
+      try {
+        const mgr = JSON.parse(managerMatch);
+        if (Array.isArray(mgr) && mgr.length > 0) fund.info.manager = mgr[0].name;
+      } catch {}
+    }
+
+    const stockMatch = match('Data_stockPercent');
+    const bondMatch = match('Data_bondPercent');
+    if (stockMatch) fund.allocation.stock = parseFloat(stockMatch).toFixed(2);
+    if (bondMatch) fund.allocation.bond = parseFloat(bondMatch).toFixed(2);
+  } catch (e) {
+    console.warn('Parse error:', e);
+  }
+}
+
+/* ════════════════════════════════════════════
+   RENDER DASHBOARD
+   ════════════════════════════════════════════ */
+function renderDashboard() {
+  if (state.funds.length === 0) return;
+  document.getElementById('dashboard').style.display = 'block';
+  renderSummaryCards();
+  renderComparisonTable();
+  renderDeepAnalysis();
+  renderQualitative();
+  renderAllCharts();
+}
+
+function renderSummaryCards() {
+  const container = document.getElementById('summaryCards');
+  container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem">
+    ${state.funds.map((f, i) => `
+      <div class="card" style="border-top:3px solid ${COLORS[i]};">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem">
+          <div>
+            <div style="font-weight:600;font-size:0.95rem">${f.name || '—'}</div>
+            <div class="text-mono text-xs text-muted">${f.code}</div>
+          </div>
+          <span style="width:10px;height:10px;border-radius:50%;background:${COLORS[i]};flex-shrink:0;margin-top:4px"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem">
+          <div>
+            <div class="text-xs text-muted">最新净值</div>
+            <div class="text-mono" style="font-size:1.1rem;font-weight:600">${f.nav || '—'}</div>
+          </div>
+          <div>
+            <div class="text-xs text-muted">今年以来收益</div>
+            <div class="text-mono" style="font-size:1.1rem;font-weight:600;color:${parseFloat(f.returns.ytd) >= 0 ? 'var(--green)' : 'var(--red)'}">
+              ${f.returns.ytd ? f.returns.ytd + '%' : '—'}
+            </div>
+          </div>
+          <div>
+            <div class="text-xs text-muted">最大回撤</div>
+            <div class="text-mono" style="font-weight:500">${f.risk.maxDrawdown ? f.risk.maxDrawdown + '%' : '—'}</div>
+          </div>
+          <div>
+            <div class="text-xs text-muted">Sharpe</div>
+            <div class="text-mono" style="font-weight:500">${f.risk.sharpe || '—'}</div>
+          </div>
+        </div>
+        ${f.info.manager ? `<div class="text-xs text-muted" style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid var(--border-light)">基金经理: ${f.info.manager}</div>` : ''}
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
+   COMPARISON TABLE
+   ════════════════════════════════════════════ */
+function renderComparisonTable() {
+  const table = document.getElementById('compTable');
+  const n = state.funds.length;
+
+  const headerCells = state.funds.map((f, i) =>
+    `<th style="color:${COLORS[i]}">
+      <div class="fund-name-cell">
+        <div class="fn-name">${f.name || '—'}</div>
+        <div class="fn-code">${f.code}</div>
+      </div>
+    </th>`
+  ).join('');
+
+  // Row helper with best/worst highlighting
+  function dataRow(label, path, unit = '', highlight = true) {
+    const vals = state.funds.map(f => getNestedValue(f, path));
+    const nums = vals.map(v => parseFloat(v));
+    const validNums = nums.filter(n => !isNaN(n));
+
+    const cells = vals.map((v, i) => {
+      const num = nums[i];
+      let cls = '';
+      if (highlight && validNums.length > 1 && !isNaN(num)) {
+        // For most metrics, higher is better; for drawdown and vol, lower is better
+        const isLowerBetter = path.includes('maxDrawdown') || path.includes('annualVol');
+        const best = isLowerBetter ? Math.min(...validNums) : Math.max(...validNums);
+        const worst = isLowerBetter ? Math.max(...validNums) : Math.min(...validNums);
+        if (num === best && validNums.filter(n => n === best).length < validNums.length) cls = 'best';
+        else if (num === worst && validNums.filter(n => n === worst).length < validNums.length) cls = 'worst';
+      }
+      return `<td class="${cls}" contenteditable="true"
+        data-fund="${i}" data-path="${path}"
+        onblur="updateCell(this)">${v ? v + unit : ''}</td>`;
+    }).join('');
+
+    return `<tr><td style="font-weight:500">${label}</td>${cells}</tr>`;
+  }
+
+  table.innerHTML = `
+    <thead><tr><th style="width:160px">指标</th>${headerCells}</tr></thead>
+    <tbody>
+      <tr class="section-row"><td colspan="${n + 1}">基本信息</td></tr>
+      <tr><td>基金管理人</td>${state.funds.map((f, i) =>
+        `<td contenteditable="true" data-fund="${i}" data-path="info.company" onblur="updateCell(this)">${f.info.company || ''}</td>`
+      ).join('')}</tr>
+      <tr><td>基金经理</td>${state.funds.map((f, i) =>
+        `<td contenteditable="true" data-fund="${i}" data-path="info.manager" onblur="updateCell(this)">${f.info.manager || ''}</td>`
+      ).join('')}</tr>
+      <tr><td>成立日期</td>${state.funds.map((f, i) =>
+        `<td contenteditable="true" data-fund="${i}" data-path="info.inceptionDate" onblur="updateCell(this)">${f.info.inceptionDate || ''}</td>`
+      ).join('')}</tr>
+      <tr><td>最新规模</td>${state.funds.map((f, i) =>
+        `<td contenteditable="true" data-fund="${i}" data-path="info.size" onblur="updateCell(this)">${f.info.size ? f.info.size + '亿' : ''}</td>`
+      ).join('')}</tr>
+
+      <tr class="section-row"><td colspan="${n + 1}">业绩表现 (%)</td></tr>
+      ${dataRow('今年以来', 'returns.ytd', '%')}
+      ${dataRow('近1月', 'returns.m1', '%')}
+      ${dataRow('近3月', 'returns.m3', '%')}
+      ${dataRow('近6月', 'returns.m6', '%')}
+      ${dataRow('近1年', 'returns.y1', '%')}
+      ${dataRow('近2年', 'returns.y2', '%')}
+      ${dataRow('近3年', 'returns.y3', '%')}
+      ${dataRow('成立以来', 'returns.inception', '%')}
+
+      <tr class="section-row"><td colspan="${n + 1}">风险指标</td></tr>
+      ${dataRow('年化波动率', 'risk.annualVol', '%')}
+      ${dataRow('最大回撤', 'risk.maxDrawdown', '%')}
+      ${dataRow('Sharpe比率', 'risk.sharpe', '')}
+      ${dataRow('Calmar比率', 'risk.calmar', '')}
+      ${dataRow('Sortino比率', 'risk.sortino', '')}
+
+      <tr class="section-row"><td colspan="${n + 1}">资产配置 (%)</td></tr>
+      ${dataRow('股票占比', 'allocation.stock', '%', false)}
+      ${dataRow('债券占比', 'allocation.bond', '%', false)}
+      ${dataRow('现金占比', 'allocation.cash', '%', false)}
+      ${dataRow('其他', 'allocation.other', '%', false)}
+    </tbody>
+  `;
+}
+
+function getNestedValue(obj, path) {
+  return path.split('.').reduce((o, k) => (o && o[k] !== undefined ? o[k] : ''), obj);
+}
+
+function setNestedValue(obj, path, value) {
+  const keys = path.split('.');
+  let curr = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!curr[keys[i]]) curr[keys[i]] = {};
+    curr = curr[keys[i]];
+  }
+  curr[keys[keys.length - 1]] = value;
+}
+
+function updateCell(td) {
+  const fi = parseInt(td.dataset.fund);
+  const path = td.dataset.path;
+  const val = td.textContent.trim().replace(/[%亿万]/g, '');
+  setNestedValue(state.funds[fi], path, val);
+  renderSummaryCards();
+  renderAllCharts();
+}
+
+/* ════════════════════════════════════════════
+   QUALITATIVE SECTION
+   ════════════════════════════════════════════ */
+function renderQualitative() {
+  const fields = [
+    { key: 'style', label: '投资风格描述' },
+    { key: 'riskControl', label: '风控能力评价' },
+    { key: 'teamStability', label: '团队稳定性' },
+    { key: 'suitability', label: '客户适配建议' },
+  ];
+
+  const grid = document.getElementById('qualGrid');
+  grid.innerHTML = state.funds.map((f, i) => `
+    <div style="border-top:2px solid ${COLORS[i]};padding-top:0.8rem">
+      <h3 style="margin-bottom:0.6rem;color:${COLORS[i]}">${f.name || f.code}</h3>
+      ${fields.map(field => `
+        <div class="qual-item">
+          <label>${field.label}</label>
+          <textarea placeholder="输入${field.label}..."
+            oninput="state.funds[${i}].qualitative.${field.key}=this.value"
+          >${f.qualitative[field.key] || ''}</textarea>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════════════════
+   AUTO-GENERATE QUALITATIVE ASSESSMENT
+   ════════════════════════════════════════════ */
+function autoGenerateQualitative() {
+  if (state.funds.length === 0) return;
+  const n = state.funds.length;
+
+  // Raw metric arrays
+  const R = {
+    ytd: state.funds.map(f => parseFloat(f.returns.ytd) || 0),
+    m3:  state.funds.map(f => parseFloat(f.returns.m3) || 0),
+    m6:  state.funds.map(f => parseFloat(f.returns.m6) || 0),
+    y1:  state.funds.map(f => parseFloat(f.returns.y1) || 0),
+    y2:  state.funds.map(f => parseFloat(f.returns.y2) || 0),
+    y3:  state.funds.map(f => parseFloat(f.returns.y3) || 0),
+  };
+  const K = {
+    dd:     state.funds.map(f => Math.abs(parseFloat(f.risk.maxDrawdown) || 0)),
+    vol:    state.funds.map(f => parseFloat(f.risk.annualVol) || 0),
+    sharpe: state.funds.map(f => parseFloat(f.risk.sharpe) || 0),
+    calmar: state.funds.map(f => parseFloat(f.risk.calmar) || 0),
+    sortino:state.funds.map(f => parseFloat(f.risk.sortino) || 0),
+  };
+
+  const ctx = {
+    n, R, K,
+    rank: {},       // percentile rank per metric (higher = better)
+    ddRank: [],     // for drawdown: lower is better
+  };
+
+  // Compute percentile ranks for each fund across all metrics
+  const pctRank = (arr, i) => {
+    if (n <= 1) return -1;
+    const below = arr.filter(v => v < arr[i]).length;
+    return below / (n - 1);
+  };
+  ctx.rank.y1 = state.funds.map((_, i) => pctRank(R.y1, i));
+  ctx.rank.y3 = state.funds.map((_, i) => pctRank(R.y3, i));
+  ctx.rank.sharpe = state.funds.map((_, i) => pctRank(K.sharpe, i));
+  // For drawdown, lower is better, so invert
+  ctx.ddRank = state.funds.map((_, i) => {
+    if (n <= 1) return -1;
+    const above = K.dd.filter(v => v > K.dd[i]).length;
+    return above / (n - 1);
+  });
+
+  // Cross-fund averages for reference
+  ctx.avg = {
+    y1: R.y1.reduce((a,b) => a+b, 0) / n,
+    dd: K.dd.reduce((a,b) => a+b, 0) / n,
+    vol: K.vol.reduce((a,b) => a+b, 0) / n,
+    sharpe: K.sharpe.reduce((a,b) => a+b, 0) / n,
+  };
+
+  state.funds.forEach((f, i) => {
+    f.qualitative.style = _genStyle(f, i, ctx);
+    f.qualitative.riskControl = _genRisk(f, i, ctx);
+    f.qualitative.teamStability = _genTeam(f, i, ctx);
+    f.qualitative.suitability = _genSuit(f, i, ctx);
+  });
+
+  renderQualitative();
+  showStatus('定性评估已根据定量数据自动生成，可继续编辑修改', false);
+}
+
+/* ── Return consistency helper ── */
+function _retConsistency(R, i) {
+  const vals = [R.ytd[i], R.m3[i] * (12/3), R.m6[i] * (12/6), R.y1[i]]
+    .filter(v => !isNaN(v) && v !== 0);
+  if (vals.length < 2) return 'stable';
+  const mean = vals.reduce((a,b) => a+b,0) / vals.length;
+  const std = Math.sqrt(vals.reduce((a,v) => a + (v-mean)**2, 0) / vals.length);
+  const cv = Math.abs(mean) > 0.01 ? std / Math.abs(mean) : 0;
+  if (cv < 0.2) return 'very_stable';
+  if (cv < 0.4) return 'stable';
+  if (cv < 0.7) return 'moderate';
+  return 'volatile';
+}
+
+/* ── Return decomposition helper ── */
+function _decomposeReturn(stock, y1) {
+  const eqContrib = stock * 0.08;   // assume equity long-run ~8% annualized
+  const bondResid = y1 - eqContrib;
+  if (eqContrib > 3 && bondResid > 3) return 'balanced';
+  if (eqContrib > 4 && bondResid < 2) return 'equity_driven';
+  if (eqContrib < 1.5 && bondResid > 3) return 'bond_alpha';
+  if (bondResid > eqContrib * 1.5) return 'bond_dominant';
+  return 'balanced';
+}
+
+/* ═══════ 投资风格 ═══════ */
+function _genStyle(f, i, ctx) {
+  const s = parseFloat(f.allocation.stock) || 0;
+  const b = parseFloat(f.allocation.bond) || 0;
+  const y1 = parseFloat(f.returns.y1) || 0;
+  const y3 = parseFloat(f.returns.y3) || 0;
+  const sharpe = parseFloat(f.risk.sharpe) || 0;
+  const calmar = parseFloat(f.risk.calmar) || 0;
+  const p = [];
+
+  // ① Strategy classification — stock/bond ratio determines primary type
+  if (s <= 5)       p.push('极低权益暴露，接近纯债策略');
+  else if (s <= 12) p.push('低权益仓位，偏防守的固收+定位');
+  else if (s <= 22) p.push('权益仓位适中，平衡型固收+策略');
+  else if (s <= 32) p.push('权益增强力度较大，进攻型固收+');
+  else              p.push('高权益配置，偏债混合风格，进攻性突出');
+
+  // ② Bond allocation weight
+  if (b >= 85)      p.push('债券占比超85%，票息收入为绝对收益基石');
+  else if (b >= 70) p.push('债券仓位充足，底仓收益贡献稳定');
+  else if (b >= 55) p.push('债券仓位中等，久期和杠杆管理空间较大');
+  else              p.push('债券配置灵活，仓位调整幅度可能较大');
+
+  // ③ Return decomposition — where does the money come from?
+  const decomp = _decomposeReturn(s, y1);
+  const decompMap = {
+    bond_alpha:    '债券端超额收益显著，体现较强的信用挖掘或利率择时能力',
+    equity_driven: '收益主要依赖权益Beta，固收端增强贡献有限',
+    balanced:      '股债两端均有贡献，收益来源较为多元',
+    bond_dominant: '收益以债券票息和资本利得为主，权益增强为辅',
+  };
+  if (decompMap[decomp]) p.push(decompMap[decomp]);
+
+  // ④ Multi-period return consistency
+  const y3Ann = y3 > 0 ? (y3 / 3) : 0;
+  if (y1 > 0 && y3Ann > 0) {
+    const ratio = y1 / y3Ann;
+    if (ratio > 1.8)       p.push('近一年收益显著高于三年年化，可能存在阶段性行情集中贡献');
+    else if (ratio > 1.3)  p.push('近一年表现优于长期均值，处于策略顺风期');
+    else if (ratio < 0.5)  p.push('近一年收益明显低于长期均值，策略可能处于逆风期或发生风格漂移');
+    else if (ratio < 0.8)  p.push('近一年略低于长期水平，表现有所承压');
+    else                   p.push('长短期限收益基本一致，业绩持续性较好');
+  }
+
+  // ⑤ Return level assessment — calibrated for 固收+
+  if (y1 >= 8)       p.push(`近一年收益${y1.toFixed(1)}%，在固收+中属于优秀水平`);
+  else if (y1 >= 5)  p.push(`近一年收益${y1.toFixed(1)}%，处于同类中上水平`);
+  else if (y1 >= 3)  p.push(`近一年收益${y1.toFixed(1)}%，表现中规中矩`);
+  else if (y1 >= 0)  p.push(`近一年收益${y1.toFixed(1)}%，绝对收益偏低`);
+  else               p.push(`近一年收益${y1.toFixed(1)}%，录得负收益`);
+
+  // ⑥ Risk-adjusted efficiency — realistic thresholds for 固收+
+  if (sharpe >= 0.9)      p.push(`Sharpe ${sharpe.toFixed(2)}，风险收益效率在同类中属于优秀`);
+  else if (sharpe >= 0.6) p.push(`Sharpe ${sharpe.toFixed(2)}，风险收益匹配度较好`);
+  else if (sharpe >= 0.3) p.push(`Sharpe ${sharpe.toFixed(2)}，风险收益效率一般`);
+  else if (sharpe > 0)    p.push(`Sharpe仅${sharpe.toFixed(2)}，单位风险获取的收益偏低`);
+
+  if (calmar >= 1.0 && sharpe < 0.6) p.push('Calmar比率弥补了Sharpe的不足，回撤补偿机制较好');
+
+  return p.join('。') + (p.length ? '。' : '');
+}
+
+/* ═══════ 风控能力 ═══════ */
+function _genRisk(f, i, ctx) {
+  const dd      = Math.abs(parseFloat(f.risk.maxDrawdown) || 0);
+  const vol     = parseFloat(f.risk.annualVol) || 0;
+  const sharpe  = parseFloat(f.risk.sharpe) || 0;
+  const calmar  = parseFloat(f.risk.calmar) || 0;
+  const sortino = parseFloat(f.risk.sortino) || 0;
+  const stock   = parseFloat(f.allocation.stock) || 0;
+  const p = [];
+
+  // ① Absolute drawdown severity — calibrated for 固收+ (tighter than before)
+  if (dd <= 1.5)       p.push(`最大回撤仅${dd.toFixed(2)}%，回撤控制极为出色，接近"画线"水平`);
+  else if (dd <= 3)    p.push(`最大回撤${dd.toFixed(2)}%，下行风险管理能力突出`);
+  else if (dd <= 5)    p.push(`最大回撤${dd.toFixed(2)}%，在固收+产品中属于较好水平`);
+  else if (dd <= 8)    p.push(`最大回撤${dd.toFixed(2)}%，风控能力中等，机构客户可能有一定顾虑`);
+  else if (dd <= 12)   p.push(`最大回撤${dd.toFixed(2)}%，回撤偏大，需评估是否有充分的风险预算支撑`);
+  else                 p.push(`最大回撤达${dd.toFixed(2)}%，在固收+中属于高风险特征，需重点提示客户`);
+
+  // ② Drawdown-to-equity ratio — did equity exposure cause proportional pain?
+  if (stock > 0 && dd > 0) {
+    const impliedEqDD = dd / (stock / 100);
+    if (impliedEqDD > 35)      p.push(`权益仓位仅${stock}%但回撤达${dd}%，暗示债券端也出现了较大亏损或杠杆较高`);
+    else if (impliedEqDD > 25) p.push('回撤幅度与权益暴露基本匹配，但债券端未起到充分缓冲作用');
+    else if (impliedEqDD > 15) p.push('回撤控制优于权益市场的下跌幅度，债券端提供了一定的风险对冲');
+    else                       p.push('回撤显著小于权益市场跌幅，体现较好的防御性配置和对冲能力');
+  }
+
+  // ③ Relative drawdown ranking (percentile, lower DD = better)
+  if (ctx.n > 1) {
+    const rank = ctx.ddRank[i];
+    if (rank >= 0.67)      p.push('在对比基金中回撤控制最优');
+    else if (rank <= 0.33)  p.push('在对比基金中回撤最大，需关注风险预算的合理性');
+    else                    p.push('回撤水平在对比基金中处于中间位置');
+  }
+
+  // ④ Volatility — 固收+ should have low vol
+  if (vol > 0) {
+    if (vol <= 2.5)       p.push(`年化波动率${vol.toFixed(2)}%，净值走势极为平稳`);
+    else if (vol <= 4)    p.push(`波动率${vol.toFixed(2)}%，属于固收+的正常偏低水平`);
+    else if (vol <= 6)    p.push(`波动率${vol.toFixed(2)}%，中等偏高，净值波动体感偏强`);
+    else                  p.push(`波动率${vol.toFixed(2)}%，在固收+中偏高，接近偏债混合型特征`);
+  }
+
+  // ⑤ Volatility-adjusted assessment
+  if (vol > 0 && sharpe > 0) {
+    const volEfficiency = (parseFloat(f.returns.y1) || 0) / vol;
+    if (volEfficiency < 0.5 && vol > 4) {
+      p.push('高波动未获得相应的收益补偿，风险性价比不佳');
+    }
+  }
+
+  // ⑥ Sortino — downside risk focus
+  if (sortino > 1.5)      p.push(`Sortino ${sortino.toFixed(2)}，下行风险控制能力优异`);
+  else if (sortino > 1.0) p.push(`Sortino ${sortino.toFixed(2)}，下行风险管理较好`);
+  else if (sortino > 0 && sortino < 0.6) p.push(`Sortino仅${sortino.toFixed(2)}，下行波动偏高`);
+
+  // ⑦ Calmar compensation
+  if (calmar > 1.0)       p.push(`Calmar ${calmar.toFixed(2)}，回撤的收益补偿效率较高`);
+  else if (calmar > 0 && calmar < 0.4) p.push(`Calmar仅${calmar.toFixed(2)}，单位回撤换取的年化收益偏低`);
+
+  return p.join('。') + (p.length ? '。' : '');
+}
+
+/* ═══════ 团队稳定性 ═══════ */
+function _genTeam(f, i, ctx) {
+  const manager  = f.info.manager || '';
+  const inception = f.info.inceptionDate || '';
+  const company  = f.info.company || '';
+  const size     = parseFloat(f.info.size) || 0;
+  const p = [];
+
+  // ① Manager tenure — clearly distinguish fund age vs manager tenure
+  if (manager && inception) {
+    const inceptionDate = new Date(inception);
+    const now = new Date();
+    const fundYears = (now - inceptionDate) / (365.25 * 24 * 3600 * 1000);
+
+    // Flag: if fund is old but manager name is known, it might be a replacement
+    if (fundYears >= 5) {
+      p.push(`基金成立于${inception}（运作${Math.floor(fundYears)}年），当前经理${manager}，建议确认其实际任职起始日期及是否发生过经理变更`);
+    } else if (fundYears >= 3) {
+      p.push(`基金经理${manager}管理该产品${fundYears.toFixed(1)}年，已覆盖较完整的牛熊周期`);
+    } else if (fundYears >= 1) {
+      p.push(`基金经理${manager}任职${fundYears.toFixed(1)}年，处于策略验证期，建议持续跟踪`);
+    } else {
+      p.push(`基金经理${manager}任职不足1年，业绩记录尚短，建议关注其管理经验和历史产品表现`);
+    }
+  } else if (manager) {
+    p.push(`当前基金经理为${manager}，缺少任职时间信息，建议核实后评估`);
+  } else {
+    p.push('基金经理信息待补充，团队背景是机构尽调的重要维度');
+  }
+
+  // ② Company assessment — scale-based instead of hardcoded list
+  if (company && size > 0) {
+    if (size >= 100)      p.push(`${company}管理规模${size}亿，属于头部产品，机构认可度高`);
+    else if (size >= 50)  p.push(`${company}旗下该产品规模${size}亿，市场接受度较好`);
+    else if (size >= 20)  p.push(`${company}该产品规模${size}亿，运营稳定`);
+    else if (size >= 5)   p.push(`规模${size}亿，处于成长阶段`);
+    else                  p.push(`规模仅${size}亿，需关注清盘风险和机构大额申赎对净值的冲击`);
+  } else if (size > 0) {
+    if (size >= 50)       p.push(`产品规模${size}亿，流动性充裕`);
+    else if (size < 2)    p.push(`规模不足2亿，存在清盘风险`);
+    else                  p.push(`产品规模${size}亿`);
+  }
+
+  // ③ Scale relative positioning
+  if (ctx.n > 1) {
+    const sizes = state.funds.map(f => parseFloat(f.info.size) || 0).filter(s => s > 0);
+    if (sizes.length > 1 && size > 0) {
+      const maxSize = Math.max(...sizes);
+      const minSize = Math.min(...sizes);
+      if (size === maxSize && sizes.length > 1 && maxSize !== minSize) {
+        p.push('在对比产品中规模最大，机构配置偏好较强');
+      } else if (size === minSize && maxSize !== minSize) {
+        p.push('在对比产品中规模最小，流动性和议价能力可能受限');
+      }
+    }
+  }
+
+  // ④ Tenure-performance cross-check
+  if (manager && inception) {
+    const y3 = parseFloat(f.returns.y3) || 0;
+    const fundYears = (new Date() - new Date(inception)) / (365.25 * 24 * 3600 * 1000);
+    if (fundYears >= 3 && y3 > 10) {
+      p.push('三年累计收益超10%，中长期业绩得到验证');
+    } else if (fundYears >= 3 && y3 < 0) {
+      p.push('三年累计收益为负，中长期业绩承压，建议审慎评估');
+    }
+  }
+
+  return p.join('。') + (p.length ? '。' : '');
+}
+
+/* ═══════ 客户适配建议 ═══════ */
+function _genSuit(f, i, ctx) {
+  const dd     = Math.abs(parseFloat(f.risk.maxDrawdown) || 0);
+  const vol    = parseFloat(f.risk.annualVol) || 0;
+  const y1     = parseFloat(f.returns.y1) || 0;
+  const y3     = parseFloat(f.returns.y3) || 0;
+  const sharpe = parseFloat(f.risk.sharpe) || 0;
+  const calmar = parseFloat(f.risk.calmar) || 0;
+  const stock  = parseFloat(f.allocation.stock) || 0;
+  const size   = parseFloat(f.info.size) || 0;
+  const p = [];
+
+  // ① Institutional mandate matching — match against common institutional constraints
+  const mandates = [];
+  if (dd <= 3 && vol <= 3 && y1 >= 3)  mandates.push('银行理财子绝对收益目标（回撤<3%，年化>3%）');
+  if (dd <= 5 && y1 >= 4)               mandates.push('保险资管稳健配置（回撤<5%，年化>4%）');
+  if (dd <= 8 && y1 >= 5)               mandates.push('企业年金/FOF进取仓位（回撤<8%，年化>5%）');
+  if (sharpe >= 0.8 && dd <= 5)          mandates.push('风险预算约束较严的机构客户（高Sharpe+低回撤）');
+  if (y1 >= 7 && stock > 15)             mandates.push('券商自营/私募FOF等追求弹性的客户');
+  if (dd <= 2 && stock <= 10)            mandates.push('银行自营/养老金等极低风险偏好客户');
+
+  if (mandates.length > 0) {
+    p.push('适配机构类型：' + mandates.slice(0, 3).join('、'));
+  } else {
+    p.push('综合风险收益特征，适合中等风险偏好的机构客户');
+  }
+
+  // ② Cross-fund comparative advantage — use percentile ranks
+  if (ctx.n > 1) {
+    const advs = [];
+    if (ctx.rank.y1[i] >= 0.67)     advs.push('收益');
+    if (ctx.ddRank[i] >= 0.67)      advs.push('回撤控制');
+    if (ctx.rank.sharpe[i] >= 0.67) advs.push('风险收益效率');
+
+    if (advs.length === 3) {
+      p.push('在对比产品中收益、回撤、Sharpe三项均领先，综合竞争力突出');
+    } else if (advs.length === 2) {
+      p.push(`在对比产品中${advs.join('和')}两项表现领先`);
+    } else if (advs.length === 1) {
+      p.push(`在对比产品中${advs[0]}维度具有相对优势`);
+    }
+
+    // Weakness flag
+    const weaks = [];
+    if (ctx.rank.y1[i] <= 0.33 && ctx.n >= 3)  weaks.push('收益排名靠后');
+    if (ctx.ddRank[i] <= 0.33 && ctx.n >= 3)   weaks.push('回撤排名偏大');
+    if (weaks.length > 0) p.push('需注意：' + weaks.join('、'));
+  }
+
+  // ③ Holding period recommendation
+  if (dd <= 2) {
+    p.push('建议最低持有期3个月即可');
+  } else if (dd <= 5) {
+    p.push('建议最低持有期6个月以上');
+  } else if (dd <= 10) {
+    p.push('建议最低持有期1年以上，以平滑波动');
+  } else {
+    p.push('建议持有期2年以上，适合作为中长期底仓配置');
+  }
+
+  // ④ Core/satellite positioning
+  if (sharpe >= 0.7 && dd <= 5 && size >= 20) {
+    p.push('可作为机构固收+组合的核心持仓标的');
+  } else if (sharpe >= 0.7 && dd <= 5) {
+    p.push('具备核心持仓的潜质，但规模因素需纳入考量');
+  } else if (y1 >= 7 && dd > 5) {
+    p.push('收益弹性好但波动不小，更适合作为卫星仓位增厚收益');
+  } else if (y1 < 3 && dd <= 3) {
+    p.push('收益偏低但极度稳健，可作为现金管理替代或流动性储备');
+  }
+
+  // ⑤ Capacity concern
+  if (size > 0 && size < 2) {
+    p.push('规模不足2亿，存在清盘风险，机构大额配置前需审慎评估');
+  } else if (size > 0 && size < 5 && stock > 20) {
+    p.push('规模偏小且权益仓位较高，大额申购赎回可能对净值产生冲击');
+  }
+
+  // ⑥ Long-term track record
+  if (y3 > 0) {
+    const y3Ann = y3 / 3;
+    if (y3Ann >= 5)       p.push(`三年年化${y3Ann.toFixed(1)}%，中长期业绩验证充分`);
+    else if (y3Ann >= 3)  p.push(`三年年化${y3Ann.toFixed(1)}%，中长期表现稳健`);
+    else if (y3Ann > 0)   p.push(`三年年化${y3Ann.toFixed(1)}%，长期收益偏低`);
+    else                  p.push('三年累计收益为负，长期业绩承压');
+  }
+
+  return p.join('。') + (p.length ? '。' : '');
+}
+
+/* ════════════════════════════════════════════
+   DEEP ANALYSIS MODULES
+   ════════════════════════════════════════════ */
+function renderDeepAnalysis() {
+  if (state.funds.length === 0) return;
+  renderDriftAnalysis();
+  renderScenarioAnalysis();
+  renderBetaAnalysis();
+}
+
+/* ── Style Drift Detection ── */
+function renderDriftAnalysis() {
+  const container = document.getElementById('driftTables');
+  const quarters = state.funds[0]?.quarterlyHistory?.map(q => q.quarter) || [];
+
+  // Build editable table for stock allocation across quarters
+  const buildRows = (field) => state.funds.map((f, fi) => {
+    const cells = (f.quarterlyHistory || []).map((q, qi) =>
+      `<td contenteditable="true" onblur="updateDriftCell(${fi},${qi},'${field}',this)">${q[field] || ''}</td>`
+    ).join('');
+    return `<tr><td class="fund-label" style="color:${COLORS[fi]}">${f.name || f.code}</td>${cells}</tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="drift-table">
+      <thead><tr><th>基金</th>${quarters.map(q => `<th>${q}</th>`).join('')}<th>标准差</th></tr></thead>
+      <tbody>
+        <tr class="section-row"><td colspan="${quarters.length + 2}" style="font-size:0.75rem;padding-top:0.6rem">股票仓位 (%)</td></tr>
+        ${buildRows('stock')}
+        <tr class="section-row"><td colspan="${quarters.length + 2}" style="font-size:0.75rem;padding-top:0.6rem">债券仓位 (%)</td></tr>
+        ${buildRows('bond')}
+      </tbody>
+    </table>
+  `;
+
+  // Add drift std dev values
+  container.querySelectorAll('tbody').forEach(tbody => {
+    tbody.querySelectorAll('tr').forEach(tr => {
+      const stdCell = tr.querySelector('td:last-child');
+      if (stdCell && tr.classList.contains('section-row')) return;
+    });
+  });
+
+  // Calculate and display std dev
+  state.funds.forEach((f, fi) => {
+    const stockVals = (f.quarterlyHistory || []).map(q => parseFloat(q.stock)).filter(v => !isNaN(v));
+    const bondVals = (f.quarterlyHistory || []).map(q => parseFloat(q.bond)).filter(v => !isNaN(v));
+    f._driftStdStock = stdDev(stockVals);
+    f._driftStdBond = stdDev(bondVals);
+  });
+
+  // Render std dev in last column
+  const rows = container.querySelectorAll('tbody tr:not(.section-row)');
+  rows.forEach((row, ri) => {
+    const fi = ri % state.funds.length;
+    const isStock = ri < state.funds.length;
+    const std = isStock ? state.funds[fi]._driftStdStock : state.funds[fi]._driftStdBond;
+    const lastTd = row.querySelector('td:last-child');
+    if (lastTd && std !== undefined) {
+      const color = std > 8 ? 'var(--red)' : std > 4 ? '#a67c00' : 'var(--green)';
+      lastTd.innerHTML = `<span style="color:${color};font-weight:600">${std.toFixed(1)}</span>`;
+    }
+  });
+
+  renderDriftChart();
+  renderDriftInsights();
+}
+
+function updateDriftCell(fi, qi, field, td) {
+  const val = td.textContent.trim().replace('%', '');
+  if (state.funds[fi]?.quarterlyHistory?.[qi]) {
+    state.funds[fi].quarterlyHistory[qi][field] = val;
+    renderDriftAnalysis();
+  }
+}
+
+function renderDriftChart() {
+  const canvas = document.getElementById('driftChart');
+  if (!canvas || state.funds.length === 0) return;
+  if (state.charts.driftChart) { try { state.charts.driftChart.destroy(); } catch {} }
+
+  const quarters = state.funds[0]?.quarterlyHistory?.map(q => q.quarter) || [];
+  const hasData = state.funds.some(f => f.quarterlyHistory?.some(q => q.stock !== ''));
+  if (!hasData) return;
+
+  const datasets = [];
+  state.funds.forEach((f, i) => {
+    datasets.push({
+      label: `${f.name || f.code} 股票`,
+      data: (f.quarterlyHistory || []).map(q => parseFloat(q.stock) || 0),
+      borderColor: COLORS[i],
+      backgroundColor: COLORS[i] + '20',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 3,
+      borderWidth: 2,
+    });
+  });
+
+  state.charts.driftChart = new Chart(canvas, {
+    type: 'line',
+    data: { labels: quarters, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 }, usePointStyle: true, padding: 10 } },
+        tooltip: { backgroundColor: 'rgba(26,50,100,0.9)', bodyFont: { family: "'JetBrains Mono',monospace", size: 11 } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10, family: "'JetBrains Mono',monospace" }, callback: v => v + '%' }, title: { display: true, text: '股票仓位', font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderDriftInsights() {
+  const container = document.getElementById('driftInsights');
+  if (!container) return;
+  const tags = [];
+  state.funds.forEach((f, i) => {
+    const std = f._driftStdStock;
+    if (std === undefined || std === 0) return;
+    const name = f.name || f.code;
+    if (std > 8) {
+      tags.push(`<span class="insight-tag insight-bad">${name}: 股票仓位标准差 ${std.toFixed(1)}%，风格漂移显著</span>`);
+    } else if (std > 4) {
+      tags.push(`<span class="insight-tag insight-warn">${name}: 仓位波动 ${std.toFixed(1)}%，需关注择时意图</span>`);
+    } else {
+      tags.push(`<span class="insight-tag insight-good">${name}: 仓位稳定（σ=${std.toFixed(1)}%）</span>`);
+    }
+    // Check trend: compare first half vs second half
+    const vals = (f.quarterlyHistory || []).map(q => parseFloat(q.stock)).filter(v => !isNaN(v));
+    if (vals.length >= 4) {
+      const firstHalf = vals.slice(0, Math.floor(vals.length / 2));
+      const secondHalf = vals.slice(Math.floor(vals.length / 2));
+      const avgFirst = firstHalf.reduce((a,b) => a+b, 0) / firstHalf.length;
+      const avgSecond = secondHalf.reduce((a,b) => a+b, 0) / secondHalf.length;
+      const drift = avgSecond - avgFirst;
+      if (Math.abs(drift) > 5) {
+        const dir = drift > 0 ? '上升' : '下降';
+        tags.push(`<span class="insight-tag insight-warn">${name}: 近半年权益仓位${dir}${Math.abs(drift).toFixed(1)}个百分点</span>`);
+      }
+    }
+  });
+  container.innerHTML = tags.length ? tags.join('') : '<span class="text-xs text-muted">填入季度数据后将自动生成漂移分析</span>';
+}
+
+/* ── Downside Scenario Attribution ── */
+function renderScenarioAnalysis() {
+  const container = document.getElementById('scenarioTable');
+  if (!container) return;
+
+  const scenarios = [
+    { key: 'bondCrash2022', name: '2022.11 债灾', desc: '理财赎回潮引发债市踩踏' },
+    { key: 'equityRally2023', name: '2023 Q1 AI行情', desc: 'ChatGPT带动科技股暴涨' },
+    { key: 'bondRally2024', name: '2024 债牛', desc: '利率持续下行，长债大涨' },
+    { key: 'equityCorrection', name: '权益回调期', desc: '市场系统性下跌阶段' },
+    { key: 'rateCut2025', name: '降息周期', desc: '央行连续降息，利率中枢下移' },
+  ];
+
+  const headerCells = state.funds.map((f, i) =>
+    `<th style="color:${COLORS[i]}">${f.name || f.code}</th>`
+  ).join('');
+
+  const rows = scenarios.map(s => {
+    const cells = state.funds.map((f, fi) => {
+      const val = f.scenarioReturns?.[s.key] || '';
+      return `<td contenteditable="true" onblur="updateScenarioCell(${fi},'${s.key}',this)">${val}</td>`;
+    }).join('');
+    return `<tr>
+      <td><strong>${s.name}</strong><span class="event-desc">${s.desc}</span></td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="scenario-table">
+      <thead><tr><th style="width:180px">市场事件</th>${headerCells}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  renderScenarioInsights();
+}
+
+function updateScenarioCell(fi, key, td) {
+  const val = td.textContent.trim().replace('%', '');
+  if (state.funds[fi]) {
+    if (!state.funds[fi].scenarioReturns) state.funds[fi].scenarioReturns = {};
+    state.funds[fi].scenarioReturns[key] = val;
+    renderScenarioInsights();
+  }
+}
+
+function renderScenarioInsights() {
+  const container = document.getElementById('scenarioInsights');
+  if (!container) return;
+  const tags = [];
+
+  // Analyze: which fund performed best/worst in each scenario
+  const scenarios = ['bondCrash2022', 'equityCorrection'];
+  const scenarioNames = { bondCrash2022: '债灾', equityCorrection: '权益回调' };
+
+  scenarios.forEach(key => {
+    const vals = state.funds.map((f, i) => ({
+      name: f.name || f.code,
+      val: parseFloat(f.scenarioReturns?.[key]),
+      idx: i
+    })).filter(v => !isNaN(v.val));
+
+    if (vals.length >= 2) {
+      const best = vals.reduce((a, b) => a.val > b.val ? a : b);
+      const worst = vals.reduce((a, b) => a.val < b.val ? a : b);
+      if (best.val > 0 && worst.val < 0) {
+        tags.push(`<span class="insight-tag insight-good">${best.name} 在${scenarioNames[key]}中正收益</span>`);
+        tags.push(`<span class="insight-tag insight-bad">${worst.name} 在${scenarioNames[key]}中跌${Math.abs(worst.val).toFixed(1)}%</span>`);
+      }
+    }
+  });
+
+  // Check consistency: did any fund have positive returns in ALL scenarios?
+  state.funds.forEach((f, i) => {
+    const vals = Object.values(f.scenarioReturns || {}).map(v => parseFloat(v)).filter(v => !isNaN(v));
+    if (vals.length >= 3 && vals.every(v => v > 0)) {
+      tags.push(`<span class="insight-tag insight-good">${f.name || f.code}: 所有场景均为正收益</span>`);
+    }
+  });
+
+  container.innerHTML = tags.length ? tags.join('') : '<span class="text-xs text-muted">填入各场景收益后将自动生成归因分析</span>';
+}
+
+/* ── Beta Decomposition ── */
+function renderBetaAnalysis() {
+  const container = document.getElementById('betaTable');
+  if (!container) return;
+
+  const metrics = [
+    { key: 'eqBeta', label: '股票Beta (vs 沪深300)', desc: '对权益市场的敏感度' },
+    { key: 'bdBeta', label: '债券Beta (vs 中债综合)', desc: '对债券市场的跟踪程度' },
+    { key: 'alpha', label: '年化Alpha (%)', desc: '剥离市场因素后的超额收益' },
+    { key: 'rSquared', label: 'R²', desc: '基准对基金收益的解释力度' },
+    { key: 'trackingErr', label: '跟踪误差 (%)', desc: '相对基准的偏离程度' },
+    { key: 'infoRatio', label: '信息比率', desc: '单位跟踪误差的超额收益' },
+  ];
+
+  const headerCells = state.funds.map((f, i) =>
+    `<th style="color:${COLORS[i]}">${f.name || f.code}</th>`
+  ).join('');
+
+  const rows = metrics.map(m => {
+    const cells = state.funds.map((f, fi) => {
+      const val = f.betaDecomp?.[m.key] || '';
+      return `<td contenteditable="true" onblur="updateBetaCell(${fi},'${m.key}',this)"
+        title="${m.desc}">${val}</td>`;
+    }).join('');
+    return `<tr><th>${m.label}</th>${cells}</tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="beta-table">
+      <thead><tr><th>归因指标</th>${headerCells}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  renderBetaChart();
+  renderBetaInsights();
+}
+
+function updateBetaCell(fi, key, td) {
+  const val = td.textContent.trim().replace('%', '');
+  if (state.funds[fi]) {
+    if (!state.funds[fi].betaDecomp) state.funds[fi].betaDecomp = {};
+    state.funds[fi].betaDecomp[key] = val;
+    renderBetaChart();
+    renderBetaInsights();
+  }
+}
+
+function renderBetaChart() {
+  const canvas = document.getElementById('betaChart');
+  if (!canvas || state.funds.length === 0) return;
+  if (state.charts.betaChart) { try { state.charts.betaChart.destroy(); } catch {} }
+
+  // Scatter: Alpha (y-axis) vs EqBeta (x-axis), bubble size = R²
+  const hasData = state.funds.some(f => f.betaDecomp?.alpha !== '');
+  if (!hasData) {
+    // Show empty state hint
+    const ctx2d = canvas.getContext('2d');
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  state.charts.betaChart = new Chart(canvas, {
+    type: 'scatter',
+    data: {
+      datasets: state.funds.map((f, i) => ({
+        label: f.name || f.code,
+        data: [{
+          x: parseFloat(f.betaDecomp?.eqBeta) || 0,
+          y: parseFloat(f.betaDecomp?.alpha) || 0,
+        }],
+        backgroundColor: COLORS[i],
+        borderColor: COLORS[i],
+        pointRadius: Math.max(6, (parseFloat(f.betaDecomp?.rSquared) || 0.3) * 16),
+        pointHoverRadius: 14,
+        pointBorderWidth: 2,
+        pointBorderColor: '#fff',
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 }, usePointStyle: true, padding: 10 } },
+        tooltip: {
+          backgroundColor: 'rgba(26,50,100,0.9)',
+          bodyFont: { family: "'JetBrains Mono',monospace", size: 11 },
+          callbacks: {
+            label: (ctx) => {
+              const f = state.funds[ctx.datasetIndex];
+              return [
+                `股票Beta: ${f.betaDecomp?.eqBeta || '—'}`,
+                `Alpha: ${f.betaDecomp?.alpha || '—'}%`,
+                `R²: ${f.betaDecomp?.rSquared || '—'}`,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '股票Beta (沪深300)', font: { size: 11 } },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { font: { size: 10, family: "'JetBrains Mono',monospace" } }
+        },
+        y: {
+          title: { display: true, text: '年化Alpha (%)', font: { size: 11 } },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { font: { size: 10, family: "'JetBrains Mono',monospace" }, callback: v => v + '%' }
+        }
+      }
+    }
+  });
+}
+
+function renderBetaInsights() {
+  const container = document.getElementById('betaInsights');
+  if (!container) return;
+  const tags = [];
+
+  state.funds.forEach((f, i) => {
+    const bd = f.betaDecomp || {};
+    const alpha = parseFloat(bd.alpha);
+    const eqBeta = parseFloat(bd.eqBeta);
+    const r2 = parseFloat(bd.rSquared);
+    const ir = parseFloat(bd.infoRatio);
+    const name = f.name || f.code;
+
+    if (isNaN(alpha)) return;
+
+    // Alpha assessment
+    if (alpha >= 2) {
+      tags.push(`<span class="insight-tag insight-good">${name}: Alpha ${alpha.toFixed(1)}%，主动管理能力突出</span>`);
+    } else if (alpha >= 0.5) {
+      tags.push(`<span class="insight-tag insight-good">${name}: Alpha ${alpha.toFixed(1)}%，有一定超额收益</span>`);
+    } else if (alpha > -0.5) {
+      tags.push(`<span class="insight-tag insight-warn">${name}: Alpha接近零，主动增值有限</span>`);
+    } else {
+      tags.push(`<span class="insight-tag insight-bad">${name}: Alpha为负，跑输基准</span>`);
+    }
+
+    // Beta interpretation
+    if (!isNaN(eqBeta)) {
+      if (eqBeta > 0.3) {
+        tags.push(`<span class="insight-tag insight-warn">${name}: 股票Beta ${eqBeta.toFixed(2)}，权益暴露偏高</span>`);
+      } else if (eqBeta > 0 && eqBeta < 0.15) {
+        tags.push(`<span class="insight-tag insight-good">${name}: 股票Beta仅${eqBeta.toFixed(2)}，市场风险隔离好</span>`);
+      }
+    }
+
+    // R² — how much is explained by benchmarks
+    if (!isNaN(r2)) {
+      if (r2 > 0.85) {
+        tags.push(`<span class="insight-tag insight-warn">${name}: R²=${r2.toFixed(2)}，收益几乎完全由市场驱动</span>`);
+      } else if (r2 < 0.5 && alpha > 1) {
+        tags.push(`<span class="insight-tag insight-good">${name}: R²低+Alpha高，真正的选股/择时能力</span>`);
+      }
+    }
+
+    // Information ratio
+    if (!isNaN(ir)) {
+      if (ir > 0.5) {
+        tags.push(`<span class="insight-tag insight-good">${name}: IR=${ir.toFixed(2)}，超额收益稳定</span>`);
+      } else if (ir < 0) {
+        tags.push(`<span class="insight-tag insight-bad">${name}: IR为负，主动管理拖累收益</span>`);
+      }
+    }
+  });
+
+  container.innerHTML = tags.length ? tags.join('') : '<span class="text-xs text-muted">填入归因数据后将自动生成 Beta 分析结论</span>';
+}
+
+/* ── Utility: Standard Deviation ── */
+function stdDev(arr) {
+  if (arr.length < 2) return 0;
+  const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+  const variance = arr.reduce((a, v) => a + (v - mean) ** 2, 0) / (arr.length - 1);
+  return Math.sqrt(variance);
+}
+
+/* ════════════════════════════════════════════
+   CHARTS
+   ════════════════════════════════════════════ */
+function destroyCharts() {
+  Object.values(state.charts).forEach(c => { try { c.destroy(); } catch {} });
+  state.charts = {};
+  // Also clear deep analysis canvases
+  ['driftChart', 'betaChart'].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) { try { c.getContext('2d').clearRect(0, 0, c.width, c.height); } catch {} }
+  });
+}
+
+function renderAllCharts() {
+  destroyCharts();
+  if (state.funds.length === 0) return;
+  renderReturnChart();
+  renderDrawdownChart();
+  renderRiskReturnChart();
+  renderAllocationChart();
+}
+
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: {
+      position: 'bottom',
+      labels: {
+        font: { family: "'Source Sans 3', sans-serif", size: 11 },
+        padding: 16,
+        usePointStyle: true,
+        pointStyleWidth: 8,
+      }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(26,50,100,0.92)',
+      titleFont: { family: "'Source Sans 3', sans-serif", size: 12 },
+      bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+      padding: 10,
+      cornerRadius: 6,
+    }
+  }
+};
+
+function renderReturnChart() {
+  const ctx = document.getElementById('returnChart');
+  const periods = ['近1月', '近3月', '近6月', '近1年', '近2年', '近3年'];
+  const keys = ['m1', 'm3', 'm6', 'y1', 'y2', 'y3'];
+
+  state.charts.returnChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: periods,
+      datasets: state.funds.map((f, i) => ({
+        label: f.name || f.code,
+        data: keys.map(k => parseFloat(f.returns[k]) || 0),
+        backgroundColor: COLORS[i] + 'cc',
+        borderColor: COLORS[i],
+        borderWidth: 1,
+        borderRadius: 4,
+        barPercentage: 0.7,
+        categoryPercentage: 0.75,
+      }))
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11, family: "'Source Sans 3', sans-serif" } }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { size: 10, family: "'JetBrains Mono', monospace" },
+            callback: v => v + '%'
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderDrawdownChart() {
+  const ctx = document.getElementById('drawdownChart');
+  const names = state.funds.map(f => f.name || f.code);
+  const vals = state.funds.map(f => Math.abs(parseFloat(f.risk.maxDrawdown) || 0));
+
+  state.charts.drawdownChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{
+        label: '最大回撤',
+        data: vals,
+        backgroundColor: state.funds.map((_, i) => COLORS[i] + '99'),
+        borderColor: state.funds.map((_, i) => COLORS[i]),
+        borderWidth: 1,
+        borderRadius: 6,
+        barPercentage: 0.55,
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      indexAxis: 'y',
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { size: 10, family: "'JetBrains Mono', monospace" },
+            callback: v => '-' + v + '%'
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 11, family: "'Source Sans 3', sans-serif" } }
+        }
+      },
+      plugins: {
+        ...chartDefaults.plugins,
+        legend: { display: false },
+      }
+    }
+  });
+}
+
+function renderRiskReturnChart() {
+  const ctx = document.getElementById('riskReturnChart');
+
+  state.charts.riskReturnChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: state.funds.map((f, i) => ({
+        label: f.name || f.code,
+        data: [{
+          x: parseFloat(f.risk.annualVol) || 0,
+          y: parseFloat(f.returns.y1) || 0,
+        }],
+        backgroundColor: COLORS[i],
+        borderColor: COLORS[i],
+        pointRadius: 10,
+        pointHoverRadius: 13,
+        pointBorderWidth: 2,
+        pointBorderColor: '#fff',
+      }))
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        x: {
+          title: { display: true, text: '年化波动率 (%)', font: { size: 11, family: "'Source Sans 3', sans-serif" } },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { font: { size: 10, family: "'JetBrains Mono', monospace" }, callback: v => v + '%' }
+        },
+        y: {
+          title: { display: true, text: '近1年收益 (%)', font: { size: 11, family: "'Source Sans 3', sans-serif" } },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { font: { size: 10, family: "'JetBrains Mono', monospace" }, callback: v => v + '%' }
+        }
+      }
+    }
+  });
+}
+
+function renderAllocationChart() {
+  const ctx = document.getElementById('allocationChart');
+
+  state.charts.allocationChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: state.funds.map(f => f.name || f.code),
+      datasets: [
+        { label: '股票', data: state.funds.map(f => parseFloat(f.allocation.stock) || 0), backgroundColor: '#1a3264cc', borderRadius: 3 },
+        { label: '债券', data: state.funds.map(f => parseFloat(f.allocation.bond) || 0), backgroundColor: '#d5a12acc', borderRadius: 3 },
+        { label: '现金', data: state.funds.map(f => parseFloat(f.allocation.cash) || 0), backgroundColor: '#2a7d5fcc', borderRadius: 3 },
+        { label: '其他', data: state.funds.map(f => parseFloat(f.allocation.other) || 0), backgroundColor: '#a0aec0cc', borderRadius: 3 },
+      ]
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 11, family: "'Source Sans 3', sans-serif" } }
+        },
+        y: {
+          stacked: true,
+          max: 100,
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { size: 10, family: "'JetBrains Mono', monospace" },
+            callback: v => v + '%'
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════
+   DEMO DATA
+   ════════════════════════════════════════════ */
+function loadDemoData() {
+  clearAll();
+  state.funds = [
+    {
+      code: '001303',
+      name: '易方达裕丰回报A',
+      nav: '1.8520', navDate: '2026-07-08',
+      returns: { ytd: '3.82', m1: '0.65', m3: '1.92', m6: '2.74', y1: '5.38', y2: '10.21', y3: '14.67', inception: '85.20' },
+      risk: { annualVol: '4.12', maxDrawdown: '-5.38', sharpe: '1.42', calmar: '0.98', sortino: '2.15' },
+      allocation: { stock: '18.5', bond: '75.2', cash: '4.8', other: '1.5' },
+      info: { inceptionDate: '2015-06-12', manager: '张清华', size: '82.3', company: '易方达基金', type: '固收+' },
+      quarterlyHistory: [
+        { quarter: '24Q3', stock: '16.2', bond: '78.5', cash: '3.8', other: '1.5' },
+        { quarter: '24Q4', stock: '17.8', bond: '76.3', cash: '4.4', other: '1.5' },
+        { quarter: '25Q1', stock: '19.5', bond: '74.8', cash: '4.2', other: '1.5' },
+        { quarter: '25Q2', stock: '18.2', bond: '75.5', cash: '4.8', other: '1.5' },
+        { quarter: '25Q3', stock: '17.0', bond: '77.1', cash: '4.4', other: '1.5' },
+        { quarter: '25Q4', stock: '19.8', bond: '74.0', cash: '4.7', other: '1.5' },
+        { quarter: '26Q1', stock: '20.5', bond: '73.2', cash: '4.8', other: '1.5' },
+        { quarter: '26Q2', stock: '18.5', bond: '75.2', cash: '4.8', other: '1.5' },
+      ],
+      scenarioReturns: { bondCrash2022: '-2.1', equityRally2023: '3.8', bondRally2024: '4.2', equityCorrection: '-1.5', rateCut2025: '2.8' },
+      betaDecomp: { eqBeta: '0.22', bdBeta: '0.95', alpha: '1.8', rSquared: '0.78', trackingErr: '1.85', infoRatio: '0.62' },
+      qualitative: {
+        style: '', riskControl: '', teamStability: '', suitability: ''
+      }
+    },
+    {
+      code: '002969',
+      name: '招商产业债A',
+      nav: '1.4280', navDate: '2026-07-08',
+      returns: { ytd: '4.15', m1: '0.78', m3: '2.31', m6: '3.12', y1: '6.82', y2: '12.45', y3: '17.89', inception: '42.80' },
+      risk: { annualVol: '5.67', maxDrawdown: '-8.12', sharpe: '1.18', calmar: '0.84', sortino: '1.72' },
+      allocation: { stock: '25.3', bond: '68.5', cash: '3.2', other: '3.0' },
+      info: { inceptionDate: '2016-09-22', manager: '马龙', size: '45.6', company: '招商基金', type: '固收+' },
+      quarterlyHistory: [
+        { quarter: '24Q3', stock: '20.5', bond: '73.2', cash: '3.3', other: '3.0' },
+        { quarter: '24Q4', stock: '22.8', bond: '70.5', cash: '3.7', other: '3.0' },
+        { quarter: '25Q1', stock: '28.5', bond: '65.2', cash: '3.3', other: '3.0' },
+        { quarter: '25Q2', stock: '24.2', bond: '69.5', cash: '3.3', other: '3.0' },
+        { quarter: '25Q3', stock: '22.0', bond: '71.8', cash: '3.2', other: '3.0' },
+        { quarter: '25Q4', stock: '26.8', bond: '67.0', cash: '3.2', other: '3.0' },
+        { quarter: '26Q1', stock: '29.5', bond: '64.3', cash: '3.2', other: '3.0' },
+        { quarter: '26Q2', stock: '25.3', bond: '68.5', cash: '3.2', other: '3.0' },
+      ],
+      scenarioReturns: { bondCrash2022: '-4.5', equityRally2023: '5.2', bondRally2024: '3.1', equityCorrection: '-3.8', rateCut2025: '2.2' },
+      betaDecomp: { eqBeta: '0.38', bdBeta: '0.88', alpha: '2.5', rSquared: '0.72', trackingErr: '2.45', infoRatio: '0.48' },
+      qualitative: {
+        style: '', riskControl: '', teamStability: '', suitability: ''
+      }
+    },
+    {
+      code: '005771',
+      name: '银华可转债A',
+      nav: '1.3150', navDate: '2026-07-08',
+      returns: { ytd: '2.95', m1: '0.42', m3: '1.58', m6: '2.15', y1: '4.12', y2: '8.67', y3: '12.34', inception: '31.50' },
+      risk: { annualVol: '3.85', maxDrawdown: '-4.25', sharpe: '1.08', calmar: '0.97', sortino: '1.65' },
+      allocation: { stock: '12.8', bond: '80.5', cash: '5.2', other: '1.5' },
+      info: { inceptionDate: '2018-03-15', manager: '王鑫', size: '28.9', company: '银华基金', type: '固收+' },
+      quarterlyHistory: [
+        { quarter: '24Q3', stock: '12.0', bond: '81.5', cash: '5.0', other: '1.5' },
+        { quarter: '24Q4', stock: '13.5', bond: '80.0', cash: '5.0', other: '1.5' },
+        { quarter: '25Q1', stock: '14.2', bond: '79.3', cash: '5.0', other: '1.5' },
+        { quarter: '25Q2', stock: '12.5', bond: '81.0', cash: '5.0', other: '1.5' },
+        { quarter: '25Q3', stock: '11.8', bond: '81.8', cash: '4.9', other: '1.5' },
+        { quarter: '25Q4', stock: '13.0', bond: '80.5', cash: '5.0', other: '1.5' },
+        { quarter: '26Q1', stock: '14.5', bond: '79.0', cash: '5.0', other: '1.5' },
+        { quarter: '26Q2', stock: '12.8', bond: '80.5', cash: '5.2', other: '1.5' },
+      ],
+      scenarioReturns: { bondCrash2022: '-1.2', equityRally2023: '2.5', bondRally2024: '4.8', equityCorrection: '-0.8', rateCut2025: '3.5' },
+      betaDecomp: { eqBeta: '0.12', bdBeta: '0.92', alpha: '0.8', rSquared: '0.82', trackingErr: '1.42', infoRatio: '0.35' },
+      qualitative: {
+        style: '', riskControl: '', teamStability: '', suitability: ''
+      }
+    }
+  ];
+
+  renderChips();
+  renderDashboard();
+  showStatus('已加载3只示例基金数据（含深度分析），可自由编辑', false);
+}
+
+/* ════════════════════════════════════════════
+   EXPORT / IMPORT
+   ════════════════════════════════════════════ */
+function exportJSON() {
+  const data = JSON.stringify(state.funds, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `fund_comparison_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON() {
+  document.getElementById('fileInput').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        state.funds = data;
+        renderChips();
+        renderDashboard();
+        showStatus('数据导入成功', false);
+      }
+    } catch (err) {
+      showStatus('导入失败: 文件格式错误', false);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+/* ════════════════════════════════════════════
+   REPORT GENERATION
+   ════════════════════════════════════════════ */
+function generateReport() {
+  const preview = document.getElementById('reportPreview');
+  const today = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+  const fundNames = state.funds.map(f => f.name || f.code).join(' vs ');
+
+  // Generate summary text
+  const bestReturn = state.funds.reduce((a, b) =>
+    parseFloat(a.returns.y1) > parseFloat(b.returns.y1) ? a : b
+  );
+  const lowestDD = state.funds.reduce((a, b) =>
+    Math.abs(parseFloat(a.risk.maxDrawdown) || 999) < Math.abs(parseFloat(b.risk.maxDrawdown) || 999) ? a : b
+  );
+  const bestSharpe = state.funds.reduce((a, b) =>
+    parseFloat(a.risk.sharpe) > parseFloat(b.risk.sharpe) ? a : b
+  );
+
+  preview.innerHTML = `
+    <div class="report-preview">
+      <div class="report-header">
+        <h1 style="font-size:1.5rem;margin-bottom:0.3rem">固收+基金产品对比分析报告</h1>
+        <div class="report-date">${today} &nbsp;|&nbsp; ${fundNames}</div>
+      </div>
+
+      <div style="margin-bottom:2rem">
+        <h2 style="font-size:1rem;margin-bottom:0.8rem;color:var(--ink);border-bottom:2px solid var(--gold);display:inline-block;padding-bottom:0.3rem">分析摘要</h2>
+        <p style="font-size:0.88rem;line-height:1.7;color:#3a4560;max-width:70ch">
+          本次对比涵盖 ${state.funds.length} 只固收+基金产品。
+          近一年收益表现最优的是 <strong>${bestReturn.name || bestReturn.code}</strong>（${bestReturn.returns.y1 || '—'}%），
+          回撤控制最好的是 <strong>${lowestDD.name || lowestDD.code}</strong>（最大回撤 ${lowestDD.risk.maxDrawdown || '—'}%），
+          风险收益比（Sharpe）最高的是 <strong>${bestSharpe.name || bestSharpe.code}</strong>（${bestSharpe.risk.sharpe || '—'}）。
+        </p>
+      </div>
+
+      <div style="margin-bottom:2rem">
+        <h2 style="font-size:1rem;margin-bottom:0.8rem;color:var(--ink);border-bottom:2px solid var(--gold);display:inline-block;padding-bottom:0.3rem">核心指标对比</h2>
+        <table class="comp-table" style="font-size:0.8rem">
+          ${document.getElementById('compTable').innerHTML}
+        </table>
+      </div>
+
+      ${state.funds.some(f => Object.values(f.qualitative).some(v => v)) ? `
+      <div style="margin-bottom:2rem">
+        <h2 style="font-size:1rem;margin-bottom:0.8rem;color:var(--ink);border-bottom:2px solid var(--gold);display:inline-block;padding-bottom:0.3rem">定性评估</h2>
+        ${state.funds.map((f, i) => {
+          const quals = Object.entries(f.qualitative).filter(([_, v]) => v);
+          if (quals.length === 0) return '';
+          const labels = { style: '投资风格', riskControl: '风控能力', teamStability: '团队稳定性', suitability: '客户适配建议' };
+          return `
+            <div style="margin-bottom:1.2rem">
+              <h3 style="font-size:0.88rem;color:${COLORS[i]};margin-bottom:0.4rem">${f.name || f.code} (${f.code})</h3>
+              ${quals.map(([k, v]) => `
+                <div style="margin-bottom:0.5rem;font-size:0.84rem;line-height:1.6;color:#3a4560">
+                  <strong style="color:var(--ink)">${labels[k] || k}：</strong>${v}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }).join('')}
+      </div>
+      ` : ''}
+
+      <div style="text-align:center;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--ink-muted);font-size:0.75rem">
+        本报告由固收+基金对比工具自动生成 &nbsp;|&nbsp; 数据来源: 公开市场数据 + 人工录入 &nbsp;|&nbsp; 仅供参考，不构成投资建议
+      </div>
+    </div>
+  `;
+
+  // Show print dialog
+  preview.style.display = 'block';
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'none';
+
+  setTimeout(() => {
+    window.print();
+    // Restore UI after print
+    setTimeout(() => {
+      preview.style.display = 'none';
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('dashboard').style.display = 'block';
+    }, 500);
+  }, 300);
+}
+
+/* ════════════════════════════════════════════
+   JSON DATA LOADING
+   ════════════════════════════════════════════ */
+const _jsonData = { funds: [], scenarios: {}, benchmarks: {}, loaded: false };
+
+async function loadFromJSON() {
+  try {
+    const resp = await fetch('fund-data.json');
+    if (!resp.ok) return false;
+    const data = await resp.json();
+    _jsonData.funds = data.funds || [];
+    _jsonData.scenarios = data.scenarios || {};
+    _jsonData.benchmarks = data.benchmarks || {};
+    _jsonData.loaded = true;
+    _jsonData.updatedAt = data.updatedAt || '';
+    console.log(`Loaded ${_jsonData.funds.length} funds from JSON (updated: ${_jsonData.updatedAt})`);
+    return true;
+  } catch (e) {
+    console.log('No fund-data.json found, using manual mode');
+    return false;
+  }
+}
+
+function addFundFromJSON(code) {
+  const jf = _jsonData.funds.find(f => f.code === code);
+  if (!jf) return false;
+
+  const fund = emptyFund(code);
+  fund.name = jf.name || '';
+  fund.nav = jf.nav || '';
+  fund.navDate = jf.navDate || '';
+  fund.info.company = jf.company || '';
+  fund.info.manager = jf.manager || '';
+
+  // Returns
+  if (jf.returns) {
+    Object.assign(fund.returns, jf.returns);
+  }
+
+  // Risk
+  if (jf.risk) {
+    Object.assign(fund.risk, jf.risk);
+  }
+
+  // Allocation from latest quarter
+  if (jf.quarterlyHistory && jf.quarterlyHistory.length > 0) {
+    const latest = jf.quarterlyHistory[jf.quarterlyHistory.length - 1];
+    fund.allocation.stock = latest.stock || '';
+    fund.allocation.bond = latest.bond || '';
+    fund.allocation.cash = latest.cash || '';
+    fund.allocation.other = latest.other || '';
+    fund.quarterlyHistory = jf.quarterlyHistory;
+  }
+
+  // Scenario returns
+  if (jf.scenarioReturns) {
+    fund.scenarioReturns = jf.scenarioReturns;
+  }
+
+  // Beta decomposition
+  if (jf.betaDecomp) {
+    fund.betaDecomp = jf.betaDecomp;
+  }
+
+  state.funds.push(fund);
+  return true;
+}
+
+function loadAllFromJSON() {
+  if (!_jsonData.loaded) {
+    showStatus('未找到 fund-data.json，请手动添加基金', false);
+    return;
+  }
+  clearAll();
+  _jsonData.funds.forEach(jf => {
+    if (state.funds.length < 4) {
+      addFundFromJSON(jf.code);
+    }
+  });
+  renderChips();
+  renderDashboard();
+  showStatus(`已从数据源加载 ${state.funds.length} 只基金（${_jsonData.updatedAt}）`, false);
+}
+
+/* ════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════ */
+// Try loading from JSON, then focus input
+loadFromJSON().then(loaded => {
+  if (loaded && _jsonData.funds.length > 0) {
+    // Show hint that data is available
+    showStatus(`数据源可用（${_jsonData.funds.length}只基金），点击"加载数据源"一键导入`, false);
+  }
+});
+document.getElementById('fundCodeInput').focus();
+</script>
+</body>
+</html>
