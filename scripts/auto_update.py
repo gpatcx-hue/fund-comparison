@@ -15,7 +15,7 @@ from pathlib import Path
 TODAY = datetime.now().strftime('%Y-%m-%d')
 CACHE_PATH = Path(__file__).parent.parent / 'nav_cache.json'
 CONFIG_PATH = Path(__file__).parent.parent / 'funds.json'
-OUTPUT_PATH = Path(__file__).parent.parent / 'public' / 'fund-data.json'
+OUTPUT_PATH = Path(__file__).parent.parent / 'fund-data.json'
 
 THREADS = 5
 SLEEP = 0.3

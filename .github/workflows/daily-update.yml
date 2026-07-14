@@ -34,10 +34,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet public/fund-data.json 2>/dev/null; then
+          if git diff --quiet fund-data.json 2>/dev/null; then
             echo "No changes"
           else
-            git add public/fund-data.json
+            git add fund-data.json
             git commit -m "data: update $(TZ=Asia/Shanghai date +%Y-%m-%d)"
             git push
           fi
