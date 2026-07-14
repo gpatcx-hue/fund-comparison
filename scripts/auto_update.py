@@ -215,10 +215,6 @@ def calc_metrics(nav_list, rf=RISK_FREE_RATE):
                 r = None
         returns[key] = r if r is not None else ''
 
-    # Annualized return (1Y)
-    y1_ret = returns.get('y1', 0) or 0
-    ann_ret = ((1 + y1_ret / 100) - 1) if y1_ret else 0
-
     # Daily returns for vol calculation (1Y window)
     y1_idx = None
     target_1y = (now - timedelta(days=365)).strftime('%Y-%m-%d')
@@ -233,6 +229,14 @@ def calc_metrics(nav_list, rf=RISK_FREE_RATE):
     for i in range(y1_idx + 1, latest + 1):
         if adj[i - 1] > 0:
             daily_rets.append(adj[i] / adj[i - 1] - 1)
+
+    # Annualized return — compute directly from adjusted NAV, not from returns dict
+    # This avoids the '' or 0 trap when returns['y1'] is unavailable
+    if adj[y1_idx] > 0 and adj[latest] > 0:
+        actual_days = latest - y1_idx
+        ann_ret = (adj[latest] / adj[y1_idx]) ** (365.0 / max(actual_days, 1)) - 1
+    else:
+        ann_ret = 0
 
     vol = 0
     if len(daily_rets) > 20:
