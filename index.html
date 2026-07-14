@@ -411,10 +411,13 @@ section { margin-bottom: 2.5rem; }
 .drift-chart-container { height: 180px; margin-top: 1rem; }
 .beta-chart-wrap {
   position: relative;
-  height: 260px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-light);
 }
 .insight-tags {
   display: flex;
@@ -551,10 +554,8 @@ section { margin-bottom: 2.5rem; }
       <span class="text-xs text-muted">区分"赚市场的钱"还是"赚能力的钱"</span>
     </div>
     <p class="module-subtitle">以沪深300和中债综合指数为基准，分解基金收益来源。数据可来自 Wind/Choice/晨星。</p>
-    <div class="deep-grid">
-      <div id="betaTable"></div>
-      <div class="beta-chart-wrap"><canvas id="betaChart"></canvas></div>
-    </div>
+    <div id="betaTable"></div>
+    <div class="beta-chart-wrap"><canvas id="betaChart"></canvas></div>
     <div id="betaInsights" style="margin-top:0.8rem"></div>
   </section>
 
