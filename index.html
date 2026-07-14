@@ -429,13 +429,25 @@ section:last-child { margin-bottom: 0; }
 .scenario-table td[contenteditable="true"]:focus { background: rgba(213,161,42,0.1); outline: 2px solid var(--gold); outline-offset: -2px; }
 .scenario-table .event-desc { font-size: 0.72rem; color: var(--ink-muted); font-weight: 400; display: block; margin-top: 2px; }
 .beta-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-.beta-table th, .beta-table td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border-light); }
-.beta-table th { text-align: left; font-weight: 500; color: var(--ink-muted); font-size: 0.78rem; width: 35%; }
-.beta-table td { text-align: right; font-family: var(--font-mono); }
-.beta-table td[contenteditable="true"] { cursor: text; border-radius: 3px; }
-.beta-table td[contenteditable="true"]:focus { background: rgba(213,161,42,0.1); outline: 2px solid var(--gold); outline-offset: -2px; }
+.beta-table th, .beta-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border-light); }
+.beta-table thead th {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+  padding-bottom: 0.7rem; border-bottom: 2px solid var(--border);
+}
+.beta-table thead th:first-child { text-align: left; }
+.beta-table thead th:not(:first-child) { text-align: right; }
+.beta-table tbody th {
+  text-align: left; font-weight: 500; color: var(--ink-muted);
+  width: auto; white-space: nowrap;
+  border-right: 1px solid var(--border-light);
+  padding-right: 1.2rem;
+}
+.beta-table tbody td {
+  text-align: right; font-family: var(--font-mono);
+  padding-left: 1.2rem;
+}
+.beta-table tbody tr:hover { background: rgba(26,50,100,0.015); }
 .module-subtitle { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.8rem; line-height: 1.5; }
-.beta-table { padding-top: 0.5rem; }
 .insight-tag {
   display: inline-flex;
   align-items: center;
@@ -572,9 +584,11 @@ section:last-child { margin-bottom: 0; }
     <div class="section-label">深度分析</div>
 
     <section class="card slide-up no-print">
-      <div class="card-header">
-        <h2>风格漂移 &amp; 场景归因</h2>
-        <span class="text-xs text-muted">所有数据均可编辑</span>
+      <div class="card-header" style="flex-direction:column;align-items:flex-start;gap:0.3rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+          <h2>风格漂移 &amp; 场景归因</h2>
+          <span class="text-xs text-muted">所有数据均可编辑</span>
+        </div>
       </div>
 
       <div class="deep-grid">
@@ -599,11 +613,13 @@ section:last-child { margin-bottom: 0; }
 
   <!-- Module 3: Beta Decomposition (full width) -->
   <section class="card slide-up no-print">
-    <div class="card-header">
-      <h2>Beta 剥离与归因</h2>
-      <span class="text-xs text-muted">区分"赚市场的钱"还是"赚能力的钱"</span>
+    <div class="card-header" style="flex-direction:column;align-items:flex-start;gap:0.3rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <h2>Beta 剥离与归因</h2>
+        <span class="text-xs text-muted">区分"赚市场的钱"还是"赚能力的钱"</span>
+      </div>
+      <span class="text-xs text-muted">以沪深300和中债综合指数为基准，分解基金收益来源。数据可来自 Wind/Choice/晨星。</span>
     </div>
-    <p class="module-subtitle">以沪深300和中债综合指数为基准，分解基金收益来源。数据可来自 Wind/Choice/晨星。</p>
     <div id="betaTable"></div>
     <div class="beta-chart-wrap"><canvas id="betaChart"></canvas></div>
     <div id="betaInsights" style="margin-top:0.8rem"></div>
