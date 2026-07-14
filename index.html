@@ -359,6 +359,11 @@ section { margin-bottom: 2.5rem; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 1.5rem;
+  align-items: start;
+}
+.deep-grid > div {
+  min-width: 0;
+  overflow: hidden;
 }
 .drift-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 0.8rem; }
 .drift-table th, .drift-table td {
@@ -389,20 +394,34 @@ section { margin-bottom: 2.5rem; }
 .beta-table td { text-align: right; font-family: var(--font-mono); }
 .beta-table td[contenteditable="true"] { cursor: text; border-radius: 3px; }
 .beta-table td[contenteditable="true"]:focus { background: rgba(213,161,42,0.1); outline: 2px solid var(--gold); outline-offset: -2px; }
-.module-subtitle { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.6rem; line-height: 1.5; }
+.module-subtitle { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.8rem; line-height: 1.5; }
+.beta-table { padding-top: 0.5rem; }
 .insight-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-size: 0.72rem;
   font-weight: 500;
-  padding: 0.15rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 12px;
-  margin-right: 0.3rem;
-  margin-top: 0.4rem;
+  line-height: 1.4;
 }
 .insight-good { background: var(--green-bg); color: var(--green); }
 .insight-warn { background: #fef9ec; color: #a67c00; }
 .insight-bad { background: var(--red-bg); color: var(--red); }
 .drift-chart-container { height: 180px; margin-top: 1rem; }
+.beta-chart-wrap {
+  position: relative;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.insight-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
 @media print {
   body { background: #fff; }
   body::before { display: none; }
@@ -534,7 +553,7 @@ section { margin-bottom: 2.5rem; }
     <p class="module-subtitle">以沪深300和中债综合指数为基准，分解基金收益来源。数据可来自 Wind/Choice/晨星。</p>
     <div class="deep-grid">
       <div id="betaTable"></div>
-      <div><canvas id="betaChart"></canvas></div>
+      <div class="beta-chart-wrap"><canvas id="betaChart"></canvas></div>
     </div>
     <div id="betaInsights" style="margin-top:0.8rem"></div>
   </section>
@@ -1512,7 +1531,7 @@ function renderDriftInsights() {
       }
     }
   });
-  container.innerHTML = tags.length ? tags.join('') : '<span class="text-xs text-muted">填入季度数据后将自动生成漂移分析</span>';
+  container.innerHTML = tags.length ? `<div class="insight-tags">${tags.join('')}</div>` : '<span class="text-xs text-muted">填入季度数据后将自动生成漂移分析</span>';
 }
 
 /* ── Downside Scenario Attribution ── */
@@ -1596,7 +1615,7 @@ function renderScenarioInsights() {
     }
   });
 
-  container.innerHTML = tags.length ? tags.join('') : '<span class="text-xs text-muted">填入各场景收益后将自动生成归因分析</span>';
+  container.innerHTML = tags.length ? `<div class="insight-tags">${tags.join('')}</div>` : '<span class="text-xs text-muted">填入各场景收益后将自动生成归因分析</span>';
 }
 
 /* ── Beta Decomposition ── */
@@ -1679,7 +1698,7 @@ function renderBetaChart() {
       }))
     },
     options: {
-      responsive: true, maintainAspectRatio: true,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { position: 'bottom', labels: { font: { size: 10 }, usePointStyle: true, padding: 10 } },
         tooltip: {
@@ -1767,7 +1786,7 @@ function renderBetaInsights() {
     }
   });
 
-  container.innerHTML = tags.length ? tags.join('') : '<span class="text-xs text-muted">填入归因数据后将自动生成 Beta 分析结论</span>';
+  container.innerHTML = tags.length ? `<div class="insight-tags">${tags.join('')}</div>` : '<span class="text-xs text-muted">填入归因数据后将自动生成 Beta 分析结论</span>';
 }
 
 /* ── Utility: Standard Deviation ── */
