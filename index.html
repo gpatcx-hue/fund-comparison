@@ -59,13 +59,25 @@ h3 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; }
 
 /* ── Layout ── */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-section { margin-bottom: 2.5rem; }
+.section-group { margin-bottom: 3.5rem; }
+.section-group + .section-group { position: relative; }
+.section-group + .section-group::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--gold);
+  opacity: 0.4;
+  margin-bottom: 3rem;
+}
+section { margin-bottom: 1.2rem; }
+section:last-child { margin-bottom: 0; }
 
 /* ── Header ── */
 .header {
   padding: 2rem 0 1.5rem;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 .header-inner { display: flex; align-items: center; justify-content: space-between; }
 .header h1 { display: flex; align-items: center; gap: 0.6rem; }
@@ -94,13 +106,41 @@ section { margin-bottom: 2.5rem; }
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
 }
+.card-featured {
+  padding: 2rem;
+  border-color: rgba(26,50,100,0.12);
+  box-shadow: 0 2px 8px rgba(26,50,100,0.06);
+}
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.2rem;
-  padding-bottom: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-light);
+}
+.card-header h2 {
+  position: relative;
+  padding-left: 0.8rem;
+}
+.card-header h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 3px;
+  background: var(--gold);
+  border-radius: 2px;
+}
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
 }
 
 /* ── Input Section ── */
@@ -486,56 +526,66 @@ section { margin-bottom: 2.5rem; }
 <!-- ════ Dashboard ════ -->
 <div class="container" id="dashboard" style="display:none">
 
-  <!-- Summary Cards -->
-  <section id="summaryCards" class="fade-in"></section>
+  <!-- ─── Group 1: 数据概览 ─── -->
+  <div class="section-group">
+    <div class="section-label">数据概览</div>
 
-  <!-- Comparison Table -->
-  <section class="card slide-up">
-    <div class="card-header">
-      <h2>核心指标对比</h2>
-      <span class="text-xs text-muted">点击数值可编辑</span>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="comp-table" id="compTable"></table>
-    </div>
-  </section>
+    <section id="summaryCards" class="fade-in"></section>
 
-  <!-- Charts -->
-  <section class="chart-grid slide-up">
-    <div class="card chart-card">
-      <div class="card-header"><h2>累计收益率对比</h2></div>
-      <canvas id="returnChart"></canvas>
-    </div>
-    <div class="card chart-card">
-      <div class="card-header"><h2>最大回撤</h2></div>
-      <canvas id="drawdownChart"></canvas>
-    </div>
-    <div class="card chart-card">
-      <div class="card-header"><h2>收益风险散点</h2></div>
-      <canvas id="riskReturnChart"></canvas>
-    </div>
-    <div class="card chart-card">
-      <div class="card-header"><h2>资产配置结构</h2></div>
-      <canvas id="allocationChart"></canvas>
-    </div>
-  </section>
-
-  <!-- ═══ Deep Analysis: 风格漂移 + 场景归因 + Beta剥离 ═══ -->
-  <section class="card slide-up no-print">
-    <div class="card-header">
-      <h2>深度分析</h2>
-      <span class="text-xs text-muted">所有数据均可编辑，修改后自动更新分析结论</span>
-    </div>
-
-    <div class="deep-grid">
-      <!-- Module 1: Style Drift -->
-      <div>
-        <h3 style="margin-bottom:0.3rem">风格漂移检测</h3>
-        <p class="module-subtitle">连续季度资产配置变化趋势 — 仓位稳定性是机构尽调的核心维度</p>
-        <div id="driftTables"></div>
-        <div class="drift-chart-container"><canvas id="driftChart"></canvas></div>
-        <div id="driftInsights" style="margin-top:0.6rem"></div>
+    <section class="card card-featured slide-up">
+      <div class="card-header">
+        <h2>核心指标对比</h2>
+        <span class="text-xs text-muted">点击数值可编辑</span>
       </div>
+      <div style="overflow-x:auto">
+        <table class="comp-table" id="compTable"></table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── Group 2: 业绩可视化 ─── -->
+  <div class="section-group">
+    <div class="section-label">业绩可视化</div>
+
+    <section class="chart-grid slide-up">
+      <div class="card chart-card">
+        <div class="card-header"><h2>累计收益率对比</h2></div>
+        <canvas id="returnChart"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header"><h2>最大回撤</h2></div>
+        <canvas id="drawdownChart"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header"><h2>收益风险散点</h2></div>
+        <canvas id="riskReturnChart"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header"><h2>资产配置结构</h2></div>
+        <canvas id="allocationChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── Group 3: 深度分析 ─── -->
+  <div class="section-group">
+    <div class="section-label">深度分析</div>
+
+    <section class="card slide-up no-print">
+      <div class="card-header">
+        <h2>风格漂移 &amp; 场景归因</h2>
+        <span class="text-xs text-muted">所有数据均可编辑</span>
+      </div>
+
+      <div class="deep-grid">
+        <!-- Module 1: Style Drift -->
+        <div>
+          <h3 style="margin-bottom:0.3rem">风格漂移检测</h3>
+          <p class="module-subtitle">连续季度资产配置变化趋势 — 仓位稳定性是机构尽调的核心维度</p>
+          <div id="driftTables"></div>
+          <div class="drift-chart-container"><canvas id="driftChart"></canvas></div>
+          <div id="driftInsights" style="margin-top:0.6rem"></div>
+        </div>
 
       <!-- Module 2: Downside Scenario -->
       <div>
@@ -558,25 +608,29 @@ section { margin-bottom: 2.5rem; }
     <div class="beta-chart-wrap"><canvas id="betaChart"></canvas></div>
     <div id="betaInsights" style="margin-top:0.8rem"></div>
   </section>
+  </div><!-- end section-group: 深度分析 -->
 
-  <!-- Qualitative Assessment -->
-  <section class="card slide-up no-print">
-    <div class="card-header">
-      <h2>定性评估</h2>
-      <button class="btn btn-secondary btn-sm" onclick="autoGenerateQualitative()" title="基于定量数据自动生成定性评估">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
-        一键生成
-      </button>
+  <!-- ─── Group 4: 定性评估 ─── -->
+  <div class="section-group">
+    <div class="section-label">定性评估</div>
+
+    <section class="card slide-up no-print">
+      <div class="card-header">
+        <h2>综合定性评估</h2>
+        <button class="btn btn-secondary btn-sm" onclick="autoGenerateQualitative()" title="基于定量数据自动生成定性评估">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+          一键生成
+        </button>
+      </div>
+      <div class="qual-grid" id="qualGrid"></div>
+    </section>
+
+    <div class="action-bar no-print">
+      <button class="btn btn-secondary" onclick="exportJSON()">导出数据</button>
+      <button class="btn btn-secondary" onclick="importJSON()">导入数据</button>
+      <button class="btn btn-gold" onclick="generateReport()">生成报告</button>
     </div>
-    <div class="qual-grid" id="qualGrid"></div>
-  </section>
-
-  <!-- Action Bar -->
-  <div class="action-bar no-print">
-    <button class="btn btn-secondary" onclick="exportJSON()">导出数据</button>
-    <button class="btn btn-secondary" onclick="importJSON()">导入数据</button>
-    <button class="btn btn-gold" onclick="generateReport()">生成报告</button>
-  </div>
+  </div><!-- end section-group: 定性评估 -->
 </div>
 
 <!-- ════ Report Preview (for print) ════ -->
