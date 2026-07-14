@@ -32,12 +32,17 @@ jobs:
 
       - name: Commit & Push
         run: |
+          if [ ! -f fund-data.json ]; then
+            echo "ERROR: fund-data.json was not generated"
+            ls -la
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet fund-data.json 2>/dev/null; then
-            echo "No changes"
+          git add fund-data.json
+          if git diff --cached --quiet; then
+            echo "No changes to fund-data.json"
           else
-            git add fund-data.json
             git commit -m "data: update $(TZ=Asia/Shanghai date +%Y-%m-%d)"
             git push
           fi
