@@ -1,31 +1,30 @@
 {
-  "updatedAt": "2026-07-15 02:52:09",
+  "updatedAt": "2026-07-16 02:57:51",
   "funds": [
     {
       "code": "000171",
       "name": "易方达裕丰回报债券A",
       "company": "易方达基金",
       "manager": "张清华",
-      "nav": 2.133,
-      "navDate": "2026-07-14",
+      "nav": 2.12,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 11.38,
-        "m1": 0.99,
-        "m3": 7.13,
-        "m6": 10.92,
-        "y1": 14.86,
-        "y2": 22.87,
-        "y3": 26.59
+        "ytd": 10.7,
+        "m1": 0.38,
+        "m3": 6.75,
+        "m6": 10.02,
+        "y1": 14.22,
+        "y2": 22.12,
+        "y3": 25.82
       },
       "risk": {
-        "annualVol": 7.03,
-        "maxDrawdown": -3.15,
-        "sharpe": 3.15,
-        "calmar": 7.38,
-        "sortino": 3.08
+        "annualVol": 7.06,
+        "maxDrawdown": -3.2,
+        "sharpe": 2.99,
+        "calmar": 6.95,
+        "sortino": 2.91
       },
       "history": [
-        1.956,
         1.964,
         1.965,
         1.954,
@@ -114,9 +113,67 @@
         2.157,
         2.135,
         2.121,
-        2.133
+        2.133,
+        2.12
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "24Q2",
+          "stock": "15.06",
+          "bond": "102.39",
+          "cash": "0.53",
+          "other": "-18.0"
+        },
+        {
+          "quarter": "24Q3",
+          "stock": "17.04",
+          "bond": "115.31",
+          "cash": "0.86",
+          "other": "-33.2"
+        },
+        {
+          "quarter": "24Q4",
+          "stock": "13.92",
+          "bond": "114.95",
+          "cash": "0.79",
+          "other": "-29.7"
+        },
+        {
+          "quarter": "25Q1",
+          "stock": "16.26",
+          "bond": "114.71",
+          "cash": "0.60",
+          "other": "-31.6"
+        },
+        {
+          "quarter": "25Q2",
+          "stock": "19.07",
+          "bond": "112.92",
+          "cash": "4.27",
+          "other": "-36.3"
+        },
+        {
+          "quarter": "25Q3",
+          "stock": "18.91",
+          "bond": "82.65",
+          "cash": "0.27",
+          "other": "-1.8"
+        },
+        {
+          "quarter": "25Q4",
+          "stock": "19.11",
+          "bond": "97.68",
+          "cash": "0.25",
+          "other": "-17.0"
+        },
+        {
+          "quarter": "26Q1",
+          "stock": "17.95",
+          "bond": "92.70",
+          "cash": "0.23",
+          "other": "-10.9"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -0.48,
         "equityRally2023": 1.87,
@@ -125,12 +182,12 @@
         "rateCut2025": 1.48
       },
       "betaDecomp": {
-        "eqBeta": 0.183,
-        "bdBeta": 0.438,
-        "alpha": -26.18,
-        "rSquared": 0.07,
-        "trackingErr": 6.79,
-        "infoRatio": -3.85
+        "eqBeta": 0.187,
+        "bdBeta": 0.453,
+        "alpha": -28.06,
+        "rSquared": 0.074,
+        "trackingErr": 6.81,
+        "infoRatio": -4.12
       }
     },
     {
@@ -138,26 +195,25 @@
       "name": "招商产业债券A",
       "company": "招商基金",
       "manager": "马龙",
-      "nav": 1.8624,
-      "navDate": "2026-07-14",
+      "nav": 1.8625,
+      "navDate": "2026-07-15",
       "returns": {
         "ytd": 0.99,
         "m1": 0.13,
         "m3": 0.37,
-        "m6": 0.95,
-        "y1": 1.42,
+        "m6": 0.96,
+        "y1": 1.4,
         "y2": 3.82,
         "y3": 8.22
       },
       "risk": {
         "annualVol": 0.22,
         "maxDrawdown": -0.13,
-        "sharpe": 4.65,
-        "calmar": 16.41,
-        "sortino": 3.6
+        "sharpe": 4.55,
+        "calmar": 16.22,
+        "sortino": 3.51
       },
       "history": [
-        1.8501,
         1.8503,
         1.8505,
         1.8502,
@@ -246,9 +302,53 @@
         1.8622,
         1.8623,
         1.8623,
-        1.8624
+        1.8624,
+        1.8625
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "12Q2",
+          "stock": "0.00",
+          "bond": "133.27",
+          "cash": "1.24",
+          "other": "-34.5"
+        },
+        {
+          "quarter": "12Q3",
+          "stock": "0.00",
+          "bond": "183.06",
+          "cash": "1.00",
+          "other": "-84.1"
+        },
+        {
+          "quarter": "12Q4",
+          "stock": "0.98",
+          "bond": "194.65",
+          "cash": "1.34",
+          "other": "-97.0"
+        },
+        {
+          "quarter": "13Q1",
+          "stock": "0.80",
+          "bond": "158.82",
+          "cash": "2.13",
+          "other": "-61.7"
+        },
+        {
+          "quarter": "13Q2",
+          "stock": "0.45",
+          "bond": "135.11",
+          "cash": "1.20",
+          "other": "-36.8"
+        },
+        {
+          "quarter": "13Q3",
+          "stock": "0.52",
+          "bond": "125.13",
+          "cash": "0.92",
+          "other": "-26.6"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -1.72,
         "equityRally2023": 1.56,
@@ -259,10 +359,10 @@
       "betaDecomp": {
         "eqBeta": -0.0,
         "bdBeta": -0.02,
-        "alpha": 1.91,
+        "alpha": 1.89,
         "rSquared": 0.024,
         "trackingErr": 0.22,
-        "infoRatio": 8.62
+        "infoRatio": 8.55
       }
     },
     {
@@ -270,26 +370,25 @@
       "name": "银华可转债债券A",
       "company": "银华基金",
       "manager": "王鑫",
-      "nav": 1.5924,
-      "navDate": "2026-07-14",
+      "nav": 1.5812,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": -3.97,
-        "m1": -6.87,
-        "m3": -4.69,
-        "m6": -7.45,
-        "y1": 11.15,
-        "y2": 30.5,
-        "y3": 9.59
+        "ytd": -4.64,
+        "m1": -7.53,
+        "m3": -5.55,
+        "m6": -8.26,
+        "y1": 10.48,
+        "y2": 29.59,
+        "y3": 8.82
       },
       "risk": {
-        "annualVol": 17.9,
+        "annualVol": 17.92,
         "maxDrawdown": -13.53,
-        "sharpe": 0.9,
-        "calmar": 1.28,
-        "sortino": 0.92
+        "sharpe": 0.84,
+        "calmar": 1.2,
+        "sortino": 0.86
       },
       "history": [
-        1.6856,
         1.6887,
         1.6935,
         1.6875,
@@ -378,7 +477,8 @@
         1.6308,
         1.6082,
         1.5687,
-        1.5924
+        1.5924,
+        1.5812
       ],
       "quarterlyHistory": [
         {
@@ -446,12 +546,12 @@
         "rateCut2025": 12.4
       },
       "betaDecomp": {
-        "eqBeta": 0.537,
-        "bdBeta": 0.685,
-        "alpha": -95.47,
-        "rSquared": 0.084,
-        "trackingErr": 17.17,
-        "infoRatio": -5.56
+        "eqBeta": 0.546,
+        "bdBeta": 0.711,
+        "alpha": -98.9,
+        "rSquared": 0.087,
+        "trackingErr": 17.15,
+        "infoRatio": -5.77
       }
     },
     {
@@ -459,26 +559,25 @@
       "name": "民生加银鑫享债券A",
       "company": "民生加银基金",
       "manager": "孙伟",
-      "nav": 1.2879,
-      "navDate": "2026-07-14",
+      "nav": 1.2636,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 0.74,
-        "m1": -5.36,
-        "m3": -2.22,
-        "m6": -3.3,
-        "y1": 19.67,
-        "y2": 45.13,
-        "y3": 40.95
+        "ytd": -1.17,
+        "m1": -7.15,
+        "m3": -4.23,
+        "m6": -5.04,
+        "y1": 17.51,
+        "y2": 42.39,
+        "y3": 38.29
       },
       "risk": {
-        "annualVol": 18.04,
+        "annualVol": 18.15,
         "maxDrawdown": -9.74,
-        "sharpe": 1.66,
-        "calmar": 3.19,
-        "sortino": 1.72
+        "sharpe": 1.46,
+        "calmar": 2.83,
+        "sortino": 1.5
       },
       "history": [
-        1.3379,
         1.3338,
         1.3301,
         1.332,
@@ -567,7 +666,8 @@
         1.316,
         1.2895,
         1.2634,
-        1.2879
+        1.2879,
+        1.2636
       ],
       "quarterlyHistory": [],
       "scenarioReturns": {
@@ -578,12 +678,12 @@
         "rateCut2025": 10.72
       },
       "betaDecomp": {
-        "eqBeta": 0.529,
-        "bdBeta": 0.416,
-        "alpha": -81.02,
-        "rSquared": 0.078,
-        "trackingErr": 17.35,
-        "infoRatio": -4.67
+        "eqBeta": 0.546,
+        "bdBeta": 0.473,
+        "alpha": -88.02,
+        "rSquared": 0.083,
+        "trackingErr": 17.4,
+        "infoRatio": -5.06
       }
     },
     {
@@ -591,26 +691,25 @@
       "name": "易方达裕祥回报债券A",
       "company": "易方达基金",
       "manager": "张清华",
-      "nav": 1.602,
-      "navDate": "2026-07-14",
+      "nav": 1.609,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": -0.5,
-        "m1": -0.25,
-        "m3": -1.35,
-        "m6": -0.8,
-        "y1": 5.16,
-        "y2": 17.6,
-        "y3": 25.22
+        "ytd": -0.06,
+        "m1": 0.19,
+        "m3": -0.92,
+        "m6": -0.31,
+        "y1": 5.69,
+        "y2": 18.11,
+        "y3": 25.76
       },
       "risk": {
-        "annualVol": 3.36,
+        "annualVol": 3.38,
         "maxDrawdown": -2.94,
-        "sharpe": 2.02,
-        "calmar": 2.69,
-        "sortino": 2.17
+        "sharpe": 2.25,
+        "calmar": 2.97,
+        "sortino": 2.42
       },
       "history": [
-        1.63,
         1.631,
         1.632,
         1.629,
@@ -699,7 +798,8 @@
         1.594,
         1.595,
         1.597,
-        1.602
+        1.602,
+        1.609
       ],
       "quarterlyHistory": [
         {
@@ -767,12 +867,12 @@
         "rateCut2025": 4.34
       },
       "betaDecomp": {
-        "eqBeta": 0.048,
-        "bdBeta": 0.044,
-        "alpha": -3.91,
-        "rSquared": 0.018,
-        "trackingErr": 3.33,
-        "infoRatio": -1.17
+        "eqBeta": 0.045,
+        "bdBeta": 0.034,
+        "alpha": -2.72,
+        "rSquared": 0.016,
+        "trackingErr": 3.36,
+        "infoRatio": -0.81
       }
     },
     {
@@ -780,26 +880,25 @@
       "name": "招商金鸿债券A",
       "company": "招商基金",
       "manager": "马龙",
-      "nav": 1.2601,
-      "navDate": "2026-07-14",
+      "nav": 1.2588,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 2.79,
-        "m1": 0.44,
-        "m3": 1.16,
-        "m6": 1.72,
-        "y1": 6.26,
-        "y2": 14.21,
-        "y3": 17.88
+        "ytd": 2.68,
+        "m1": 0.33,
+        "m3": 1.1,
+        "m6": 1.5,
+        "y1": 6.07,
+        "y2": 14.09,
+        "y3": 17.76
       },
       "risk": {
-        "annualVol": 3.06,
+        "annualVol": 3.07,
         "maxDrawdown": -1.78,
-        "sharpe": 2.77,
-        "calmar": 5.37,
-        "sortino": 3.03
+        "sharpe": 2.67,
+        "calmar": 5.21,
+        "sortino": 2.93
       },
       "history": [
-        1.2426,
         1.2419,
         1.2426,
         1.2404,
@@ -888,7 +987,8 @@
         1.261,
         1.2604,
         1.2578,
-        1.2601
+        1.2601,
+        1.2588
       ],
       "quarterlyHistory": [],
       "scenarioReturns": {
@@ -899,12 +999,12 @@
         "rateCut2025": 4.92
       },
       "betaDecomp": {
-        "eqBeta": 0.116,
-        "bdBeta": 0.062,
-        "alpha": -15.45,
-        "rSquared": 0.131,
+        "eqBeta": 0.117,
+        "bdBeta": 0.065,
+        "alpha": -15.81,
+        "rSquared": 0.133,
         "trackingErr": 2.86,
-        "infoRatio": -5.4
+        "infoRatio": -5.53
       }
     },
     {
@@ -912,26 +1012,25 @@
       "name": "南方希元可转债债券A",
       "company": "南方基金",
       "manager": "刘文良",
-      "nav": 1.9905,
-      "navDate": "2026-07-14",
+      "nav": 1.9774,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 8.7,
-        "m1": -0.16,
-        "m3": 4.2,
-        "m6": 3.48,
-        "y1": 31.93,
-        "y2": 47.11,
-        "y3": 29.67
+        "ytd": 7.98,
+        "m1": -0.82,
+        "m3": 3.47,
+        "m6": 2.44,
+        "y1": 31.08,
+        "y2": 46.14,
+        "y3": 28.82
       },
       "risk": {
-        "annualVol": 17.03,
+        "annualVol": 17.05,
         "maxDrawdown": -11.48,
-        "sharpe": 2.98,
-        "calmar": 4.52,
-        "sortino": 3.1
+        "sharpe": 2.89,
+        "calmar": 4.39,
+        "sortino": 3.0
       },
       "history": [
-        1.944,
         1.9491,
         1.9574,
         1.9396,
@@ -1020,7 +1119,8 @@
         2.0284,
         2.0013,
         1.9647,
-        1.9905
+        1.9905,
+        1.9774
       ],
       "quarterlyHistory": [],
       "scenarioReturns": {
@@ -1031,12 +1131,12 @@
         "rateCut2025": 8.76
       },
       "betaDecomp": {
-        "eqBeta": 0.547,
-        "bdBeta": 0.886,
-        "alpha": -83.74,
-        "rSquared": 0.099,
-        "trackingErr": 16.2,
-        "infoRatio": -5.17
+        "eqBeta": 0.554,
+        "bdBeta": 0.906,
+        "alpha": -86.33,
+        "rSquared": 0.102,
+        "trackingErr": 16.19,
+        "infoRatio": -5.33
       }
     },
     {
@@ -1044,26 +1144,25 @@
       "name": "易方达鑫转增利混合A",
       "company": "易方达基金",
       "manager": "杨康",
-      "nav": 2.4451,
-      "navDate": "2026-07-14",
+      "nav": 2.4411,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": -1.91,
-        "m1": -2.54,
-        "m3": -6.31,
-        "m6": -4.5,
-        "y1": 13.01,
-        "y2": 25.14,
-        "y3": 18.61
+        "ytd": -2.07,
+        "m1": -2.7,
+        "m3": -6.75,
+        "m6": -4.53,
+        "y1": 13.23,
+        "y2": 24.93,
+        "y3": 18.42
       },
       "risk": {
-        "annualVol": 15.37,
+        "annualVol": 15.36,
         "maxDrawdown": -11.45,
-        "sharpe": 1.25,
-        "calmar": 1.77,
-        "sortino": 1.24
+        "sharpe": 1.27,
+        "calmar": 1.8,
+        "sortino": 1.26
       },
       "history": [
-        2.6101,
         2.5944,
         2.615,
         2.6133,
@@ -1152,7 +1251,8 @@
         2.4555,
         2.4523,
         2.4211,
-        2.4451
+        2.4451,
+        2.4411
       ],
       "quarterlyHistory": [
         {
@@ -1220,12 +1320,12 @@
         "rateCut2025": 3.78
       },
       "betaDecomp": {
-        "eqBeta": 0.409,
-        "bdBeta": 0.566,
-        "alpha": -69.08,
-        "rSquared": 0.067,
-        "trackingErr": 14.87,
-        "infoRatio": -4.65
+        "eqBeta": 0.412,
+        "bdBeta": 0.574,
+        "alpha": -70.17,
+        "rSquared": 0.068,
+        "trackingErr": 14.86,
+        "infoRatio": -4.72
       }
     },
     {
@@ -1233,26 +1333,25 @@
       "name": "嘉实稳宏债券A",
       "company": "嘉实基金",
       "manager": "赖礼辉",
-      "nav": 1.8896,
-      "navDate": "2026-07-14",
+      "nav": 1.8607,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 5.38,
-        "m1": -3.44,
-        "m3": 1.41,
-        "m6": -0.35,
-        "y1": 27.55,
-        "y2": 39.64,
-        "y3": 26.21
+        "ytd": 3.77,
+        "m1": -4.92,
+        "m3": -0.22,
+        "m6": -2.03,
+        "y1": 25.79,
+        "y2": 37.5,
+        "y3": 24.28
       },
       "risk": {
-        "annualVol": 19.24,
+        "annualVol": 19.31,
         "maxDrawdown": -11.6,
-        "sharpe": 2.25,
-        "calmar": 3.82,
-        "sortino": 2.21
+        "sharpe": 2.08,
+        "calmar": 3.56,
+        "sortino": 2.04
       },
       "history": [
-        1.9015,
         1.9083,
         1.9099,
         1.8924,
@@ -1341,7 +1440,8 @@
         1.9578,
         1.9215,
         1.8642,
-        1.8896
+        1.8896,
+        1.8607
       ],
       "quarterlyHistory": [
         {
@@ -1409,12 +1509,12 @@
         "rateCut2025": 7.96
       },
       "betaDecomp": {
-        "eqBeta": 0.563,
-        "bdBeta": 1.059,
-        "alpha": -93.0,
-        "rSquared": 0.084,
-        "trackingErr": 18.44,
-        "infoRatio": -5.04
+        "eqBeta": 0.577,
+        "bdBeta": 1.101,
+        "alpha": -98.27,
+        "rSquared": 0.088,
+        "trackingErr": 18.47,
+        "infoRatio": -5.32
       }
     },
     {
@@ -1422,26 +1522,25 @@
       "name": "鹏华可转债债券A",
       "company": "鹏华基金",
       "manager": "王石千",
-      "nav": 1.9485,
-      "navDate": "2026-07-14",
+      "nav": 1.9338,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 5.47,
-        "m1": -2.2,
-        "m3": 2.5,
-        "m6": 1.07,
-        "y1": 30.84,
-        "y2": 51.29,
-        "y3": 38.19
+        "ytd": 4.67,
+        "m1": -2.94,
+        "m3": 1.61,
+        "m6": -0.07,
+        "y1": 29.56,
+        "y2": 50.15,
+        "y3": 37.15
       },
       "risk": {
-        "annualVol": 19.73,
+        "annualVol": 19.75,
         "maxDrawdown": -13.57,
-        "sharpe": 2.48,
-        "calmar": 3.69,
-        "sortino": 2.64
+        "sharpe": 2.36,
+        "calmar": 3.52,
+        "sortino": 2.52
       },
       "history": [
-        1.9308,
         1.9275,
         1.9252,
         1.9092,
@@ -1530,9 +1629,67 @@
         1.9867,
         1.9493,
         1.9158,
-        1.9485
+        1.9485,
+        1.9338
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "24Q2",
+          "stock": "20.05",
+          "bond": "88.41",
+          "cash": "1.74",
+          "other": "-10.2"
+        },
+        {
+          "quarter": "24Q3",
+          "stock": "19.85",
+          "bond": "86.39",
+          "cash": "3.83",
+          "other": "-10.1"
+        },
+        {
+          "quarter": "24Q4",
+          "stock": "16.82",
+          "bond": "89.17",
+          "cash": "5.29",
+          "other": "-11.3"
+        },
+        {
+          "quarter": "25Q1",
+          "stock": "19.62",
+          "bond": "87.41",
+          "cash": "1.46",
+          "other": "-8.5"
+        },
+        {
+          "quarter": "25Q2",
+          "stock": "19.04",
+          "bond": "87.37",
+          "cash": "1.61",
+          "other": "-8.0"
+        },
+        {
+          "quarter": "25Q3",
+          "stock": "18.27",
+          "bond": "85.37",
+          "cash": "1.34",
+          "other": "-5.0"
+        },
+        {
+          "quarter": "25Q4",
+          "stock": "18.57",
+          "bond": "87.18",
+          "cash": "1.94",
+          "other": "-7.7"
+        },
+        {
+          "quarter": "26Q1",
+          "stock": "18.43",
+          "bond": "88.31",
+          "cash": "1.96",
+          "other": "-8.7"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -2.8,
         "equityRally2023": 3.44,
@@ -1541,12 +1698,12 @@
         "rateCut2025": 10.35
       },
       "betaDecomp": {
-        "eqBeta": 0.651,
-        "bdBeta": 0.897,
-        "alpha": -102.87,
-        "rSquared": 0.103,
-        "trackingErr": 18.72,
-        "infoRatio": -5.49
+        "eqBeta": 0.66,
+        "bdBeta": 0.925,
+        "alpha": -106.4,
+        "rSquared": 0.106,
+        "trackingErr": 18.71,
+        "infoRatio": -5.69
       }
     },
     {
@@ -1554,26 +1711,25 @@
       "name": "安信民稳增长混合A",
       "company": "安信基金",
       "manager": "张翼飞",
-      "nav": 1.6344,
-      "navDate": "2026-07-14",
+      "nav": 1.645,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 1.63,
-        "m1": -2.32,
-        "m3": -1.9,
-        "m6": 0.67,
-        "y1": 7.22,
-        "y2": 16.9,
-        "y3": 25.6
+        "ytd": 2.29,
+        "m1": -1.69,
+        "m3": -1.31,
+        "m6": 1.39,
+        "y1": 8.38,
+        "y2": 17.66,
+        "y3": 26.41
       },
       "risk": {
-        "annualVol": 7.17,
+        "annualVol": 7.18,
         "maxDrawdown": -6.68,
-        "sharpe": 1.39,
-        "calmar": 1.66,
-        "sortino": 1.43
+        "sharpe": 1.64,
+        "calmar": 1.93,
+        "sortino": 1.69
       },
       "history": [
-        1.6871,
         1.6869,
         1.6929,
         1.6953,
@@ -1662,7 +1818,8 @@
         1.6156,
         1.6219,
         1.6224,
-        1.6344
+        1.6344,
+        1.645
       ],
       "quarterlyHistory": [
         {
@@ -1730,12 +1887,12 @@
         "rateCut2025": 2.28
       },
       "betaDecomp": {
-        "eqBeta": 0.031,
-        "bdBeta": -0.034,
-        "alpha": 3.23,
-        "rSquared": 0.002,
-        "trackingErr": 7.16,
-        "infoRatio": 0.45
+        "eqBeta": 0.025,
+        "bdBeta": -0.053,
+        "alpha": 5.43,
+        "rSquared": 0.001,
+        "trackingErr": 7.19,
+        "infoRatio": 0.76
       }
     },
     {
@@ -1743,26 +1900,25 @@
       "name": "易方达增强回报债券A",
       "company": "易方达基金",
       "manager": "张清华",
-      "nav": 1.396,
-      "navDate": "2026-07-14",
+      "nav": 1.398,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 2.92,
-        "m1": 0.22,
-        "m3": 0.22,
-        "m6": 2.49,
-        "y1": 5.39,
-        "y2": 18.42,
-        "y3": 29.47
+        "ytd": 3.07,
+        "m1": 0.36,
+        "m3": 0.29,
+        "m6": 1.56,
+        "y1": 5.54,
+        "y2": 18.59,
+        "y3": 29.66
       },
       "risk": {
-        "annualVol": 2.59,
+        "annualVol": 2.6,
         "maxDrawdown": -1.28,
-        "sharpe": 2.75,
-        "calmar": 6.41,
-        "sortino": 2.91
+        "sharpe": 2.84,
+        "calmar": 6.6,
+        "sortino": 3.0
       },
       "history": [
-        1.397,
         1.397,
         1.397,
         1.395,
@@ -1851,7 +2007,8 @@
         1.391,
         1.392,
         1.393,
-        1.396
+        1.396,
+        1.398
       ],
       "quarterlyHistory": [
         {
@@ -1919,12 +2076,12 @@
         "rateCut2025": 4.09
       },
       "betaDecomp": {
-        "eqBeta": 0.029,
-        "bdBeta": -0.019,
-        "alpha": 0.77,
-        "rSquared": 0.012,
-        "trackingErr": 2.58,
-        "infoRatio": 0.3
+        "eqBeta": 0.028,
+        "bdBeta": -0.021,
+        "alpha": 0.97,
+        "rSquared": 0.011,
+        "trackingErr": 2.59,
+        "infoRatio": 0.38
       }
     },
     {
@@ -1932,26 +2089,25 @@
       "name": "广发聚安混合A",
       "company": "广发基金",
       "manager": "任爽",
-      "nav": 1.492,
-      "navDate": "2026-07-14",
+      "nav": 1.491,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 2.19,
-        "m1": 0.27,
-        "m3": 1.84,
-        "m6": 2.12,
-        "y1": 4.63,
-        "y2": 10.44,
-        "y3": 11.18
+        "ytd": 2.12,
+        "m1": 0.2,
+        "m3": 1.77,
+        "m6": 1.98,
+        "y1": 4.41,
+        "y2": 10.36,
+        "y3": 11.1
       },
       "risk": {
         "annualVol": 2.36,
         "maxDrawdown": -1.16,
-        "sharpe": 2.53,
-        "calmar": 6.09,
-        "sortino": 2.4
+        "sharpe": 2.39,
+        "calmar": 5.81,
+        "sortino": 2.27
       },
       "history": [
-        1.457,
         1.458,
         1.458,
         1.457,
@@ -2040,7 +2196,8 @@
         1.494,
         1.49,
         1.488,
-        1.492
+        1.492,
+        1.491
       ],
       "quarterlyHistory": [
         {
@@ -2108,12 +2265,12 @@
         "rateCut2025": 0.56
       },
       "betaDecomp": {
-        "eqBeta": 0.085,
-        "bdBeta": 0.084,
-        "alpha": -12.13,
-        "rSquared": 0.121,
+        "eqBeta": 0.086,
+        "bdBeta": 0.086,
+        "alpha": -12.3,
+        "rSquared": 0.122,
         "trackingErr": 2.21,
-        "infoRatio": -5.49
+        "infoRatio": -5.56
       }
     },
     {
@@ -2121,26 +2278,25 @@
       "name": "博时裕腾纯债债券A",
       "company": "博时基金",
       "manager": "陈凯杨",
-      "nav": 1.0197,
-      "navDate": "2026-07-14",
+      "nav": 1.0198,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 2.94,
-        "m1": 0.22,
-        "m3": 1.82,
+        "ytd": 2.95,
+        "m1": 0.23,
+        "m3": 1.79,
         "m6": 2.85,
-        "y1": 4.5,
-        "y2": 15.05,
-        "y3": 24.85
+        "y1": 4.35,
+        "y2": 15.06,
+        "y3": 24.86
       },
       "risk": {
-        "annualVol": 2.47,
+        "annualVol": 2.46,
         "maxDrawdown": -1.11,
-        "sharpe": 2.33,
-        "calmar": 6.18,
-        "sortino": 4.67
+        "sharpe": 2.24,
+        "calmar": 5.98,
+        "sortino": 4.48
       },
       "history": [
-        0.9982,
         0.9984,
         0.9981,
         0.9966,
@@ -2229,7 +2385,8 @@
         1.0199,
         1.02,
         1.0195,
-        1.0197
+        1.0197,
+        1.0198
       ],
       "quarterlyHistory": [],
       "scenarioReturns": {
@@ -2241,11 +2398,11 @@
       },
       "betaDecomp": {
         "eqBeta": -0.005,
-        "bdBeta": -0.126,
-        "alpha": 7.83,
+        "bdBeta": -0.127,
+        "alpha": 7.9,
         "rSquared": 0.008,
         "trackingErr": 2.46,
-        "infoRatio": 3.18
+        "infoRatio": 3.21
       }
     },
     {
@@ -2253,26 +2410,25 @@
       "name": "华安新活力灵活配置混合A",
       "company": "华安基金",
       "manager": "贺涛",
-      "nav": 1.552,
-      "navDate": "2026-07-14",
+      "nav": 1.545,
+      "navDate": "2026-07-15",
       "returns": {
-        "ytd": 0.84,
-        "m1": -0.26,
-        "m3": 0.84,
-        "m6": 0.45,
-        "y1": 2.99,
-        "y2": 12.71,
-        "y3": 8.61
+        "ytd": 0.39,
+        "m1": -0.71,
+        "m3": 0.52,
+        "m6": -0.0,
+        "y1": 2.12,
+        "y2": 12.2,
+        "y3": 8.12
       },
       "risk": {
-        "annualVol": 3.7,
+        "annualVol": 3.71,
         "maxDrawdown": -3.24,
-        "sharpe": 0.93,
-        "calmar": 1.4,
-        "sortino": 0.81
+        "sharpe": 0.57,
+        "calmar": 0.99,
+        "sortino": 0.49
       },
       "history": [
-        1.542,
         1.542,
         1.543,
         1.539,
@@ -2361,9 +2517,67 @@
         1.566,
         1.556,
         1.547,
-        1.552
+        1.552,
+        1.545
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "24Q2",
+          "stock": "23.95",
+          "bond": "49.03",
+          "cash": "16.09",
+          "other": "10.9"
+        },
+        {
+          "quarter": "24Q3",
+          "stock": "31.04",
+          "bond": "28.93",
+          "cash": "31.38",
+          "other": "8.7"
+        },
+        {
+          "quarter": "24Q4",
+          "stock": "27.21",
+          "bond": "25.24",
+          "cash": "10.60",
+          "other": "36.9"
+        },
+        {
+          "quarter": "25Q1",
+          "stock": "16.40",
+          "bond": "30.34",
+          "cash": "16.64",
+          "other": "36.6"
+        },
+        {
+          "quarter": "25Q2",
+          "stock": "17.84",
+          "bond": "37.06",
+          "cash": "11.23",
+          "other": "33.9"
+        },
+        {
+          "quarter": "25Q3",
+          "stock": "12.70",
+          "bond": "42.99",
+          "cash": "5.21",
+          "other": "39.1"
+        },
+        {
+          "quarter": "25Q4",
+          "stock": "13.81",
+          "bond": "75.14",
+          "cash": "7.72",
+          "other": "3.3"
+        },
+        {
+          "quarter": "26Q1",
+          "stock": "8.10",
+          "bond": "42.47",
+          "cash": "43.62",
+          "other": "5.8"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -3.74,
         "equityRally2023": 2.17,
@@ -2372,12 +2586,12 @@
         "rateCut2025": 2.82
       },
       "betaDecomp": {
-        "eqBeta": 0.094,
-        "bdBeta": 0.256,
-        "alpha": -18.89,
-        "rSquared": 0.071,
-        "trackingErr": 3.55,
-        "infoRatio": -5.32
+        "eqBeta": 0.097,
+        "bdBeta": 0.266,
+        "alpha": -20.08,
+        "rSquared": 0.074,
+        "trackingErr": 3.57,
+        "infoRatio": -5.62
       }
     },
     {
