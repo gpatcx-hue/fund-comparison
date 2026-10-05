@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02 04:59:57",
+  "updatedAt": "2026-10-05 04:57:52",
   "funds": [
     {
       "code": "000171",
@@ -1311,7 +1311,64 @@
         2.348,
         2.3449
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "23Q4",
+          "stock": "28.74",
+          "bond": "85.53",
+          "cash": "1.97",
+          "other": "-16.2"
+        },
+        {
+          "quarter": "24Q1",
+          "stock": "26.68",
+          "bond": "76.93",
+          "cash": "1.13",
+          "other": "-4.7"
+        },
+        {
+          "quarter": "24Q2",
+          "stock": "20.73",
+          "bond": "73.70",
+          "cash": "0.93",
+          "other": "4.6"
+        },
+        {
+          "quarter": "24Q3",
+          "stock": "24.92",
+          "bond": "75.31",
+          "cash": "0.44",
+          "other": "-0.7"
+        },
+        {
+          "quarter": "24Q4",
+          "stock": "27.77",
+          "bond": "80.94",
+          "cash": "2.06",
+          "other": "-10.8"
+        },
+        {
+          "quarter": "25Q1",
+          "stock": "27.63",
+          "bond": "83.67",
+          "cash": "2.03",
+          "other": "-13.3"
+        },
+        {
+          "quarter": "25Q2",
+          "stock": "21.85",
+          "bond": "88.42",
+          "cash": "1.36",
+          "other": "-11.6"
+        },
+        {
+          "quarter": "26Q2",
+          "stock": "0.00",
+          "bond": "73.89",
+          "cash": "1.04",
+          "other": "25.1"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -0.14,
         "equityRally2023": 2.52,
@@ -1443,7 +1500,64 @@
         1.7576,
         1.7507
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "24Q3",
+          "stock": "23.45",
+          "bond": "92.82",
+          "cash": "1.38",
+          "other": "-17.6"
+        },
+        {
+          "quarter": "24Q4",
+          "stock": "19.96",
+          "bond": "91.28",
+          "cash": "1.12",
+          "other": "-12.4"
+        },
+        {
+          "quarter": "25Q1",
+          "stock": "16.08",
+          "bond": "82.51",
+          "cash": "0.86",
+          "other": "0.5"
+        },
+        {
+          "quarter": "25Q2",
+          "stock": "17.54",
+          "bond": "82.65",
+          "cash": "3.89",
+          "other": "-4.1"
+        },
+        {
+          "quarter": "25Q3",
+          "stock": "20.18",
+          "bond": "84.79",
+          "cash": "0.89",
+          "other": "-5.9"
+        },
+        {
+          "quarter": "25Q4",
+          "stock": "19.27",
+          "bond": "81.61",
+          "cash": "1.54",
+          "other": "-2.4"
+        },
+        {
+          "quarter": "26Q1",
+          "stock": "37.14",
+          "bond": "89.83",
+          "cash": "0.61",
+          "other": "-27.6"
+        },
+        {
+          "quarter": "26Q2",
+          "stock": "39.25",
+          "bond": "83.73",
+          "cash": "0.67",
+          "other": "-23.7"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -2.74,
         "equityRally2023": 4.55,
@@ -1953,7 +2067,64 @@
         1.397,
         1.3986
       ],
-      "quarterlyHistory": [],
+      "quarterlyHistory": [
+        {
+          "quarter": "24Q3",
+          "stock": "15.72",
+          "bond": "81.00",
+          "cash": "0.03",
+          "other": "3.3"
+        },
+        {
+          "quarter": "24Q4",
+          "stock": "12.24",
+          "bond": "85.00",
+          "cash": "0.05",
+          "other": "2.7"
+        },
+        {
+          "quarter": "25Q1",
+          "stock": "14.59",
+          "bond": "83.92",
+          "cash": "0.20",
+          "other": "1.3"
+        },
+        {
+          "quarter": "25Q2",
+          "stock": "14.39",
+          "bond": "106.02",
+          "cash": "0.06",
+          "other": "-20.5"
+        },
+        {
+          "quarter": "25Q3",
+          "stock": "13.94",
+          "bond": "83.93",
+          "cash": "0.10",
+          "other": "2.0"
+        },
+        {
+          "quarter": "25Q4",
+          "stock": "12.25",
+          "bond": "86.43",
+          "cash": "0.03",
+          "other": "1.3"
+        },
+        {
+          "quarter": "26Q1",
+          "stock": "12.93",
+          "bond": "84.71",
+          "cash": "0.06",
+          "other": "2.3"
+        },
+        {
+          "quarter": "26Q2",
+          "stock": "12.12",
+          "bond": "81.39",
+          "cash": "1.43",
+          "other": "5.1"
+        }
+      ],
       "scenarioReturns": {
         "bondCrash2022": -0.3,
         "equityRally2023": 2.36,
